@@ -1,0 +1,1378 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>社會探險隊：翰林五上</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF7E8; --panel:#FFFFFF; --ink:#2B2D42; --muted:#6B6F8A;
+  --sea:#3BA7F0; --sea-deep:#FF7A59; --gold:#FFC93C; --ok:#22B573; --bad:#F25C54;
+  --line:#FFD9B0; --chip:#F2F9FF; --okbg:#E2F8EC; --badbg:#FFE7E5;
+  --asia:#7CC8D6; --europe:#F6D96B; --africa:#B79AE0; --america:#F5A98E; --oceania:#A6D97A;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1D1F3E; --panel:#282C57; --ink:#F2F2FF; --muted:#AEB3D9;
+    --sea:#3896DD; --sea-deep:#D9603F; --line:#40467D; --chip:#30366A;
+    --okbg:#173B2C; --badbg:#46221C; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1D1F3E; --panel:#282C57; --ink:#F2F2FF; --muted:#AEB3D9;
+  --sea:#3896DD; --sea-deep:#D9603F; --line:#40467D; --chip:#30366A;
+  --okbg:#173B2C; --badbg:#46221C; color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  font-weight:500;line-height:1.6;font-size:18px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{background:var(--sea-deep);color:#fff;padding:28px 0 26px}
+header h1{margin:0;font-size:44px;font-weight:900;letter-spacing:.06em;line-height:1.2}
+header p{margin:6px 0 0;font-size:18px;opacity:.9}
+main{padding:28px 0 48px}
+.screen[hidden],[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.btn{border:0;border-radius:14px;padding:12px 22px;min-height:50px;font-weight:700;background:var(--sea);color:#fff;font-size:18px}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn.warn{background:var(--bad)}
+.missions{display:grid;gap:16px}
+.mission{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:18px;text-align:left;
+  background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:18px 22px}
+.mission:hover{border-color:var(--sea)}
+.mission:nth-child(5n+2) .num{background:#7ED6A5;color:#0E4A2C}
+.mission:nth-child(5n+3) .num{background:#7CC4FA;color:#0B3A63}
+.mission:nth-child(5n+4) .num{background:#FF9F8A;color:#5A1A0C}
+.mission:nth-child(5n+5) .num{background:#C3A6F5;color:#35185F}
+header{background:linear-gradient(120deg,#FF7A59 0%,#FF9E5E 55%,#FFC93C 100%)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) header{background:linear-gradient(120deg,#C9533A 0%,#D9763F 60%,#C99A2E 100%)}}
+:root[data-theme="dark"] header{background:linear-gradient(120deg,#C9533A 0%,#D9763F 60%,#C99A2E 100%)}
+header h1{text-shadow:0 2px 0 rgba(0,0,0,.12)}
+.mission .num{width:56px;height:56px;border-radius:50%;background:var(--gold);color:#3A2600;display:grid;place-items:center;font-size:28px;font-weight:900}
+.mission h2{margin:0;font-size:24px;font-weight:900}
+.mission p{margin:2px 0 0;color:var(--muted);font-size:16px}
+.stars{font-size:28px;letter-spacing:2px;color:var(--gold);white-space:nowrap}
+.stars .off{color:var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.progress{color:var(--muted);font-weight:700}
+.prompt{font-size:30px;font-weight:900;margin:0 0 14px;line-height:1.35}
+.prompt b{color:var(--sea)}
+.mapbox{overflow-x:auto;border-radius:18px;border:3px solid var(--sea-deep);background:var(--sea)}
+.mapbox svg{display:block;width:100%;min-width:720px;height:auto}
+.mapbox.tw svg{min-width:0;max-width:620px;margin:0 auto}
+.land{stroke:#ffffff;stroke-width:1.5;cursor:pointer}
+.land:hover{filter:brightness(1.08)}
+.isle-hit{fill:transparent;stroke:none}
+.zone polygon{fill:transparent;cursor:pointer}
+.zone:hover polygon{fill:rgba(255,255,255,.08)}
+.hitline{stroke:transparent;stroke-width:16;cursor:pointer}
+.visline{stroke:#fff;stroke-width:1.5;stroke-dasharray:6 6;opacity:.75;pointer-events:none}
+.visline.eq{stroke:var(--gold);opacity:1}
+.visline.found{stroke:var(--gold);stroke-width:3;stroke-dasharray:none;opacity:1}
+.tw-shape{fill:#E0533F;stroke:#fff;stroke-width:1.5;pointer-events:none}
+.maplabel{font-weight:900;font-size:17px;fill:#12304F;paint-order:stroke;stroke:#fff;stroke-width:4px;pointer-events:none}
+.maplabel.sea{fill:#fff;stroke:#164C88}
+.deg{fill:#fff;font-size:12px;font-weight:700;pointer-events:none;opacity:.85}
+.coast-hit{fill:none;stroke:transparent;stroke-width:16;cursor:pointer;stroke-linecap:round}
+#twmap:not(.coastmode) .coast-hit{pointer-events:none}
+.coast-vis{fill:none;stroke:#164C88;stroke-width:3;stroke-dasharray:6 4;opacity:0;pointer-events:none}
+.coast-dot{fill:#fff;stroke:#164C88;stroke-width:2;opacity:0;pointer-events:none}
+#twmap.coastmode .coast-dot{opacity:1}
+#twmap.coastmode .coast-vis{opacity:.9}
+#twmap .coast-vis.found{stroke:var(--gold);stroke-width:5;stroke-dasharray:none;opacity:1}
+#twmap .coast-vis.hint{stroke:var(--gold);stroke-width:5;opacity:1}
+.hint{animation:pulse .8s ease-in-out infinite}
+.zone.hint polygon{fill:rgba(242,181,68,.5)}
+.visline.hint{stroke:var(--gold);stroke-width:5;opacity:1}
+@keyframes pulse{50%{opacity:.35}}
+.feedback{min-height:56px;margin-top:14px;padding:12px 16px;border-radius:14px;font-weight:700}
+.feedback.ok{background:var(--okbg);color:var(--ok)}
+.feedback.bad{background:var(--badbg);color:var(--bad)}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:26px}
+.question{font-size:26px;font-weight:900;margin:0 0 18px;line-height:1.45}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;background:var(--chip);border:2px solid var(--line);
+  border-radius:14px;padding:12px 16px;min-height:60px;font-size:20px;font-weight:700}
+.opt:hover:not(:disabled){border-color:var(--sea)}
+.opt .k{flex:none;width:32px;height:32px;border-radius:8px;background:var(--sea);color:#fff;display:grid;place-items:center;font-size:16px}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.ok .k{background:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--bad)}
+.opt.bad .k{background:var(--bad)}
+.opt:disabled{cursor:default}
+.explain{margin-top:18px}
+.actions{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap}
+.keyhint{color:var(--muted);font-size:15px;margin-top:10px}
+.match{display:grid;grid-template-columns:1fr 1.6fr;gap:14px 24px}
+.match .col{display:grid;gap:12px;align-content:start}
+.tile{background:var(--chip);border:2px solid var(--line);border-radius:14px;padding:14px 16px;min-height:58px;font-size:19px;font-weight:700;text-align:left}
+.tile:hover:not(:disabled){border-color:var(--sea)}
+.tile.sel{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold) inset}
+.tile.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.tile.bad{background:var(--badbg);border-color:var(--bad)}
+.tile:disabled{cursor:default}
+.sortItem{font-size:30px;font-weight:900;text-align:center;padding:26px 12px 30px;line-height:1.4}
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.placed{margin:0 0 18px;padding-left:1.6em;font-size:20px;font-weight:700}
+.placed li{background:var(--okbg);color:var(--ok);border-radius:12px;padding:10px 14px;margin-bottom:8px}
+.placed:empty{display:none}
+.result{text-align:center}
+.result .stars{font-size:64px}
+.result h2{font-size:30px;margin:6px 0}
+.review{text-align:left;margin-top:22px}
+.review h3{margin:0 0 8px;font-size:20px}
+.review li{margin-bottom:10px}
+.review .ans{color:var(--ok);font-weight:700}
+.unit{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:18px;display:grid;grid-template-columns:64px 1fr;gap:18px}
+.unit .big{font-size:64px;font-weight:900;line-height:1}
+.unit h2{margin:4px 0 12px;font-size:26px;font-weight:900}
+.lessons{display:grid;gap:8px}
+.lesson{display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;background:var(--chip);
+  border:2px solid var(--line);border-radius:12px;padding:10px 14px;min-height:54px;font-size:18px;font-weight:700}
+.lesson:hover:not(:disabled){border-color:var(--sea)}
+.lesson:disabled{cursor:default;opacity:.6}
+.lesson .meta{color:var(--muted);font-size:15px;white-space:nowrap}
+.lesson .meta.go{color:var(--gold);font-size:18px}
+.wbbar{margin-bottom:18px}
+footer{color:var(--muted);font-size:14px;padding:0 0 30px}
+@media (max-width:640px){
+  .options{grid-template-columns:1fr} header h1{font-size:34px} .prompt{font-size:24px}
+  .unit{grid-template-columns:1fr;gap:4px}.unit .big{font-size:44px}
+  .match{grid-template-columns:1fr 1.3fr;gap:10px} .sortItem{font-size:24px}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>社會探險隊</h1>
+    <p>翰林版國小社會五上（第五冊）</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="units" class="screen">
+    <div class="wbbar" id="wbBar"></div>
+    <div id="unitList"></div>
+  </section>
+
+  <section id="lesson" class="screen" hidden>
+    <div class="bar"><button class="btn ghost" onclick="show('units')">回單元目錄</button></div>
+    <p class="prompt" id="lessonTitle"></p>
+    <div class="missions" id="missionList"></div>
+  </section>
+
+  <section id="mapScreen" class="screen" hidden>
+    <div class="bar">
+      <button class="btn ghost" onclick="backToLesson()">回課程選單</button>
+      <span class="progress" id="mapProgress"></span>
+    </div>
+    <p class="prompt" id="mapPrompt"></p>
+
+    <div class="mapbox" id="box-world">
+      <svg id="world" viewBox="0 0 1000 500" role="img" aria-label="世界地圖">
+        <rect width="1000" height="500" fill="var(--sea)"/>
+        <g class="zone" data-id="pacific"><polygon points="450,275 470,228 500,200 590,165 700,190 752,236 790,262 822,292 830,500 560,500 530,400 515,330 470,310"/></g>
+        <g class="zone" data-id="indian"><polygon points="228,275 330,270 372,300 420,325 335,365 330,500 180,500 210,370 240,300"/></g>
+        <g class="zone" data-id="atlantic">
+          <polygon points="0,130 82,150 82,228 58,262 106,290 140,340 160,380 160,500 0,500"/>
+          <polygon points="868,150 1000,130 1000,500 860,500 870,400 945,300 905,278 860,240 892,195"/>
+        </g>
+        <line class="hitline" data-id="tropicN" x1="0" y1="245" x2="1000" y2="245"/>
+        <line class="hitline" data-id="equator" x1="0" y1="290" x2="1000" y2="290"/>
+        <line class="hitline" data-id="tropicS" x1="0" y1="335" x2="1000" y2="335"/>
+        <g class="land" data-id="europe" fill="var(--europe)">
+          <polygon points="84,215 92,196 104,184 128,170 148,152 172,140 200,142 240,150 245,190 216,205 196,216 168,222 152,212 132,222 100,226"/>
+          <ellipse cx="108" cy="168" rx="8" ry="12"/>
+        </g>
+        <g class="land" data-id="asia" fill="var(--asia)">
+          <polygon points="240,150 300,138 380,132 470,138 578,158 560,180 526,190 490,196 474,192 456,206 440,220 425,231 418,240 406,248 392,258 386,271 382,288 370,266 355,258 336,250 320,262 310,276 296,250 276,246 263,250 250,262 228,266 214,246 196,234 196,224 216,205 245,190"/>
+          <ellipse cx="462" cy="214" rx="6" ry="16" transform="rotate(35 462 214)"/>
+          <ellipse cx="440" cy="266" rx="5" ry="11"/>
+          <ellipse cx="410" cy="290" rx="12" ry="10"/>
+          <ellipse cx="372" cy="293" rx="6" ry="16" transform="rotate(-40 372 293)"/>
+          <ellipse cx="400" cy="306" rx="14" ry="3"/>
+          <circle cx="318" cy="283" r="4"/>
+        </g>
+        <g class="land" data-id="africa" fill="var(--africa)">
+          <polygon points="84,279 61,262 66,240 94,223 136,218 193,231 210,252 228,268 243,269 232,292 214,318 205,340 180,355 162,356 150,335 146,318 136,295 112,282"/>
+          <ellipse cx="240" cy="325" rx="5" ry="13"/>
+        </g>
+        <g class="land" data-id="oceania" fill="var(--oceania)">
+          <polygon points="334,330 360,316 400,312 430,316 446,306 462,320 479,311 492,330 508,345 500,362 470,368 440,356 410,352 380,354 345,356"/>
+          <ellipse cx="472" cy="300" rx="20" ry="6"/>
+          <ellipse cx="560" cy="362" rx="4" ry="9"/>
+          <ellipse cx="553" cy="380" rx="4" ry="9"/>
+        </g>
+        <g class="land" data-id="america" fill="var(--america)">
+          <polygon points="609,165 650,148 720,138 800,136 860,148 892,172 880,200 856,214 846,232 838,246 828,236 812,238 806,252 822,264 836,272 830,276 812,268 792,262 772,254 748,234 736,222 726,212 722,198 700,184 670,178 640,180 612,178"/>
+          <polygon points="836,276 864,268 895,280 932,300 926,318 910,334 888,352 870,360 858,378 848,396 840,380 836,350 832,320 826,300 822,288"/>
+          <ellipse cx="910" cy="150" rx="22" ry="14"/>
+        </g>
+        <line class="visline" data-hint="tropicN" x1="0" y1="245" x2="1000" y2="245"/>
+        <line class="visline eq" data-hint="equator" x1="0" y1="290" x2="1000" y2="290"/>
+        <line class="visline" data-hint="tropicS" x1="0" y1="335" x2="1000" y2="335"/>
+        <text class="deg" x="994" y="240" text-anchor="end">23.5°N</text>
+        <text class="deg" x="994" y="285" text-anchor="end">0°</text>
+        <text class="deg" x="994" y="330" text-anchor="end">23.5°S</text>
+        <g aria-hidden="true" transform="translate(52 62)" style="pointer-events:none">
+          <circle r="26" fill="none" stroke="#fff" stroke-width="2" opacity=".6"/>
+          <polygon points="0,-30 6,0 0,30 -6,0" fill="#F2B544"/>
+          <polygon points="-30,0 0,-6 30,0 0,6" fill="#fff" opacity=".8"/>
+          <text y="-36" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">北</text>
+        </g>
+        <ellipse class="tw-shape" data-hint="taiwan" cx="428" cy="246" rx="4" ry="8"/>
+        <circle class="isle-hit" data-id="taiwan" cx="428" cy="246" r="13" style="cursor:pointer"/>
+        <g class="labels"></g>
+      </svg>
+    </div>
+
+    <div class="mapbox tw" id="box-twmap" hidden>
+      <svg id="twmap" viewBox="0 0 610 570" role="img" aria-label="臺灣與周圍島嶼、海域地圖">
+        <rect width="610" height="570" fill="var(--sea)"/>
+        <g class="zone" data-id="strait"><polygon points="0,215 40,185 80,140 118,95 150,45 175,35 300,125 262,225 225,300 220,350 237,390 175,400 175,570 0,570"/></g>
+        <g class="zone" data-id="eastsea"><polygon points="170,0 610,0 610,115 420,135 365,122 320,140 300,125 175,35"/></g>
+        <g class="zone" data-id="pacific"><polygon points="420,135 610,115 610,570 340,570 340,470 300,440 300,420 325,375 348,340 372,250 396,190 410,150"/></g>
+        <g class="zone" data-id="bashi"><polygon points="237,440 300,440 340,470 340,570 200,570 200,470"/></g>
+        <g class="land" data-id="china" fill="#CFC6B4"><polygon points="0,0 170,0 150,45 118,95 80,140 40,185 0,215"/></g>
+        <g class="land" data-id="taiwan" fill="#F4CF6B">
+          <polygon points="364,120 385,135 410,150 392,164 396,190 372,250 348,340 325,375 300,415 295,460 282,457 268,415 237,390 220,350 225,300 252,245 262,225 280,195 302,165 320,145 350,133"/>
+        </g>
+        <g class="land" data-id="penghu" fill="#F4CF6B">
+          <circle class="isle-hit" cx="165" cy="300" r="22"/>
+          <circle cx="162" cy="288" r="5"/><circle cx="171" cy="299" r="6"/><circle cx="158" cy="306" r="4"/><circle cx="169" cy="316" r="4"/>
+        </g>
+        <g class="land" data-id="kinmen" fill="#F4CF6B">
+          <circle class="isle-hit" cx="47" cy="206" r="14"/><ellipse cx="47" cy="206" rx="9" ry="5"/>
+        </g>
+        <g class="land" data-id="matsu" fill="#F4CF6B">
+          <circle class="isle-hit" cx="205" cy="40" r="15"/>
+          <circle cx="199" cy="31" r="4"/><circle cx="209" cy="39" r="3"/><circle cx="204" cy="48" r="3"/>
+        </g>
+        <g class="land" data-id="diaoyutai" fill="#F4CF6B">
+          <circle class="isle-hit" cx="563" cy="74" r="18"/>
+          <rect x="540" y="55" width="48" height="38" rx="6" fill="none" stroke="#fff" stroke-dasharray="4 4"/>
+          <circle cx="555" cy="72" r="3"/><circle cx="565" cy="79" r="2.5"/><circle cx="573" cy="70" r="2.5"/>
+        </g>
+        <g class="land" data-id="lyudao" fill="#F4CF6B"><circle class="isle-hit" cx="359" cy="386" r="12"/><circle cx="359" cy="386" r="4"/></g>
+        <g class="land" data-id="lanyu" fill="#F4CF6B"><circle class="isle-hit" cx="366" cy="446" r="13"/><ellipse cx="366" cy="446" rx="6" ry="5"/></g>
+        <g class="land" data-id="liuqiu" fill="#F4CF6B"><circle class="isle-hit" cx="246" cy="418" r="10"/><circle cx="246" cy="418" r="3"/></g>
+        <g class="land" data-id="guishan" fill="#F4CF6B"><circle class="isle-hit" cx="412" cy="168" r="10"/><circle cx="412" cy="168" r="4"/></g>
+        <g class="land" data-id="nanhai" fill="#F4CF6B">
+          <rect x="10" y="400" width="165" height="160" rx="12" fill="rgba(255,255,255,.14)" stroke="#fff" stroke-dasharray="5 5"/>
+          <circle cx="45" cy="432" r="4"/><circle cx="80" cy="470" r="2.5"/><circle cx="55" cy="495" r="3"/><circle cx="115" cy="520" r="2.5"/><circle cx="135" cy="540" r="3"/>
+        </g>
+        <text class="deg" x="270" y="560" text-anchor="middle">往南是菲律賓</text>
+        <g aria-hidden="true" transform="translate(560 520)" style="pointer-events:none">
+          <circle r="22" fill="none" stroke="#fff" stroke-width="2" opacity=".6"/>
+          <polygon points="0,-26 5,0 0,26 -5,0" fill="#F2B544"/>
+          <polygon points="-26,0 0,-5 26,0 0,5" fill="#fff" opacity=".8"/>
+          <text y="-30" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">北</text>
+        </g>
+        <polyline class="coast-hit" data-id="coastN" points="320,145 350,133 364,120 385,135 410,150 392,164"/>
+        <polyline class="coast-hit" data-id="coastE" points="392,164 396,190 372,250 348,340 325,375 300,415"/>
+        <polyline class="coast-hit" data-id="coastS" points="300,415 295,460 282,457 268,415"/>
+        <polyline class="coast-hit" data-id="coastW" points="268,415 237,390 220,350 225,300 252,245 262,225 280,195 302,165 320,145"/>
+        <polyline class="coast-vis" data-hint="coastN" points="320,145 350,133 364,120 385,135 410,150 392,164"/>
+        <polyline class="coast-vis" data-hint="coastE" points="392,164 396,190 372,250 348,340 325,375 300,415"/>
+        <polyline class="coast-vis" data-hint="coastS" points="300,415 295,460 282,457 268,415"/>
+        <polyline class="coast-vis" data-hint="coastW" points="268,415 237,390 220,350 225,300 252,245 262,225 280,195 302,165 320,145"/>
+        <circle class="coast-dot" cx="320" cy="145" r="4"/><circle class="coast-dot" cx="392" cy="164" r="4"/><circle class="coast-dot" cx="300" cy="415" r="4"/><circle class="coast-dot" cx="268" cy="415" r="4"/>
+        <g class="labels"></g>
+      </svg>
+    </div>
+    <div class="feedback" id="mapFeedback" role="status"></div>
+  </section>
+
+  <section id="quiz" class="screen" hidden>
+    <div class="bar">
+      <button class="btn ghost" onclick="backToLesson()">回課程選單</button>
+      <span class="progress" id="quizProgress"></span>
+    </div>
+    <div class="card">
+      <p class="question" id="quizQ"></p>
+      <div class="options" id="quizOpts"></div>
+      <div class="feedback explain" id="quizExp" role="status"></div>
+      <div class="actions"><button class="btn" id="quizNext" hidden>下一題</button></div>
+      <p class="keyhint">可以按鍵盤 1 到 4 作答，按 Enter 到下一題。</p>
+    </div>
+  </section>
+
+  <section id="match" class="screen" hidden>
+    <div class="bar">
+      <button class="btn ghost" onclick="backToLesson()">回課程選單</button>
+      <span class="progress" id="matchProgress"></span>
+    </div>
+    <p class="prompt">先點左邊，再點右邊對應的說明</p>
+    <div class="match">
+      <div class="col" id="matchLeft"></div>
+      <div class="col" id="matchRight"></div>
+    </div>
+    <div class="feedback" id="matchFeedback" role="status"></div>
+  </section>
+
+  <section id="sort" class="screen" hidden>
+    <div class="bar">
+      <button class="btn ghost" onclick="backToLesson()">回課程選單</button>
+      <span class="progress" id="sortProgress"></span>
+    </div>
+    <p class="prompt" id="sortPrompt"></p>
+    <div class="card">
+      <div class="sortItem" id="sortItem"></div>
+      <div class="cats" id="sortCats"></div>
+      <div class="feedback" id="sortFb" role="status"></div>
+      <p class="keyhint">可以按鍵盤數字鍵選擇。</p>
+    </div>
+  </section>
+
+  <section id="order" class="screen" hidden>
+    <div class="bar">
+      <button class="btn ghost" onclick="backToLesson()">回課程選單</button>
+      <span class="progress" id="orderProgress"></span>
+    </div>
+    <p class="prompt" id="orderPrompt"></p>
+    <div class="card">
+      <ol class="placed" id="orderPlaced"></ol>
+      <div class="options" id="orderPool"></div>
+      <div class="feedback" id="orderFb" role="status"></div>
+    </div>
+  </section>
+
+  <section id="result" class="screen" hidden>
+    <div class="card result">
+      <div class="stars" id="resStars"></div>
+      <h2 id="resTitle"></h2>
+      <p id="resText"></p>
+      <div class="review" id="resReview"></div>
+      <div class="actions" style="justify-content:center">
+        <button class="btn" id="resAgain">再玩一次</button>
+        <button class="btn ghost" onclick="backToLesson()">回課程選單</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+<footer class="wrap">依翰林版國小社會五上課本內容設計。答錯的題目會自動收進錯題本。</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const SKEY = 'social5a-stars', WKEY = 'social5a-wrong';
+function readJSON(k){ try { return JSON.parse(localStorage.getItem(k)) || {}; } catch(e){ return {}; } }
+function writeJSON(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+(function migrate(){
+  try {
+    const old = JSON.parse(localStorage.getItem('hanlin5a-lesson1-stars') || 'null');
+    if(old){
+      const s = readJSON(SKEY), m = {map:'u1l1:world', quiz:'u1l1:quiz1', match:'u1l1:match1'};
+      for(const k in m) if(old[k] && !(s[m[k]] >= old[k])) s[m[k]] = old[k];
+      writeJSON(SKEY, s); localStorage.removeItem('hanlin5a-lesson1-stars');
+    }
+  } catch(e){}
+})();
+function saveStar(key, v){ const s = readJSON(SKEY); if(!s[key] || v > s[key]) s[key] = v; writeJSON(SKEY, s); }
+function starHTML(n){ let h=''; for(let i=1;i<=3;i++) h += i<=n ? '★' : '<span class="off">★</span>'; return h; }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function ratioStars(r){ return r >= 0.9 ? 3 : r >= 0.7 ? 2 : 1; }
+function setFb(id, msg, cls){ const f=$(id); f.textContent = msg; f.className = 'feedback' + (cls ? ' '+cls : '') + (id==='quizExp' ? ' explain' : ''); }
+
+/* ================= 地圖設定 ================= */
+const WORLD = {
+  svg:'world',
+  miss:'這裡是海洋，但不在三大洋的範圍內，再找找看。',
+  names:{asia:'亞洲',europe:'歐洲',africa:'非洲',america:'美洲',oceania:'大洋洲',pacific:'太平洋',atlantic:'大西洋',indian:'印度洋',taiwan:'臺灣',equator:'赤道',tropicN:'北回歸線',tropicS:'南回歸線'},
+  sea:['pacific','atlantic','indian','equator','tropicN','tropicS'],
+  lines:['equator','tropicN','tropicS'],
+  labels:{asia:[[360,180]],europe:[[160,190]],africa:[[160,300]],america:[[770,195],[875,325]],oceania:[[420,343]],pacific:[[660,350]],atlantic:[[60,420],[935,420]],indian:[[270,420]],taiwan:[[470,240]],equator:[[40,284]],tropicN:[[40,239]],tropicS:[[40,329]]},
+  tasks:[
+    {id:'asia', tip:'亞洲是面積最大的洲，臺灣就在亞洲的東部。'},
+    {id:'europe', tip:'400多年前，歐洲國家靠航海技術到海外探險。'},
+    {id:'africa', tip:'赤道從非洲的中間穿過。'},
+    {id:'america', tip:'美洲分成北邊和南邊兩塊大陸，課本把它們合稱美洲。'},
+    {id:'oceania', tip:'大洋洲在赤道的南邊。'},
+    {id:'pacific', tip:'太平洋是最大的海洋，就在臺灣的東邊。'},
+    {id:'atlantic', tip:'大西洋在歐洲、非洲和美洲之間。'},
+    {id:'indian', tip:'印度洋在亞洲南邊，介於非洲和大洋洲之間。'},
+    {id:'taiwan', tip:'臺灣位在亞洲東部、太平洋的西側。'},
+    {id:'equator', tip:'赤道是0度緯線，把地球分成北半球和南半球。'},
+    {id:'tropicN', tip:'北回歸線在北緯23.5度，正好通過臺灣。'}
+  ]
+};
+const TW = {
+  svg:'twmap',
+  miss:'這裡是海洋，再找找看。',
+  names:{taiwan:'臺灣島',penghu:'澎湖群島',kinmen:'金門群島',matsu:'馬祖列島',diaoyutai:'釣魚臺列嶼',nanhai:'南海諸島',lyudao:'綠島',lanyu:'蘭嶼',liuqiu:'琉球嶼',guishan:'龜山島',strait:'臺灣海峽',bashi:'巴士海峽',pacific:'太平洋',eastsea:'東海',china:'中國'},
+  sea:['strait','bashi','pacific','eastsea'],
+  lines:[],
+  labels:{taiwan:[[318,290]],penghu:[[165,265]],kinmen:[[62,236]],matsu:[[248,44]],diaoyutai:[[563,112]],nanhai:[[92,422]],lyudao:[[400,390]],lanyu:[[406,452]],liuqiu:[[210,436]],guishan:[[458,172]],strait:[[175,190]],bashi:[[270,520]],pacific:[[515,320]],eastsea:[[420,60]],china:[[55,95]]},
+  tasks:[
+    {id:'taiwan', tip:'臺灣島位在亞洲大陸東側、太平洋西側。'},
+    {id:'penghu', tip:'澎湖群島在臺灣海峽中，發展箱網養殖漁業。'},
+    {id:'kinmen', tip:'金門群島很靠近中國大陸沿海。'},
+    {id:'matsu', tip:'馬祖列島在臺灣的西北方，也很靠近中國大陸。'},
+    {id:'diaoyutai', tip:'釣魚臺列嶼在臺灣東北方的海上。'},
+    {id:'nanhai', tip:'南海諸島包括東沙、中沙、西沙、南沙群島，太平島也在這裡。'},
+    {id:'lyudao', tip:'綠島在臺灣東南方的海上，可以體驗國際級潛水。'},
+    {id:'lanyu', tip:'蘭嶼是雅美族（達悟族）的家園。'},
+    {id:'liuqiu', tip:'琉球嶼在屏東外海。'},
+    {id:'guishan', tip:'在龜山島附近可以賞鯨豚。'},
+    {id:'strait', tip:'臺灣和中國之間隔著臺灣海峽。'},
+    {id:'bashi', tip:'臺灣和菲律賓之間隔著巴士海峽。'},
+    {id:'pacific', tip:'臺灣的東邊就是太平洋。'}
+  ]
+};
+
+const TWC = {
+  svg:'twmap', coast:true,
+  miss:'這裡是海洋，請點臺灣島的海岸線。',
+  names:{...TW.names, coastN:'北部岩石海岸', coastE:'東部斷層海岸', coastS:'南部珊瑚礁海岸', coastW:'西部沙岸'},
+  sea:[...TW.sea, 'coastN','coastE','coastS','coastW'],
+  lines:[],
+  labels:{coastN:[[352,104]], coastE:[[440,290]], coastS:[[330,495]], coastW:[[205,215]]},
+  tasks:[
+    {id:'coastW', tip:'西部沙岸由泥沙堆積而成，常見沙洲、潟湖，適合晒鹽和養殖。'},
+    {id:'coastN', tip:'北部岩石海岸線曲折，天然良港多，例如基隆港。'},
+    {id:'coastE', tip:'東部斷層海岸多懸崖峭壁，例如清水斷崖。'},
+    {id:'coastS', tip:'南部珊瑚礁海岸海水溫暖，設立國家公園保育生態。'}
+  ]
+};
+
+/* ================= 課程資料 ================= */
+const UNITS = [
+  {n:1, c:'#3A86C8', t:'臺灣的位置與先民足跡', l:[
+    {id:'u1l1', t:'第1課　從地圖探索位置與發展有何關聯？', p:14},
+    {id:'u1l2', t:'第2課　史前人們如何善用資源維持生活？', p:22},
+    {id:'u1l3', t:'第3課　原住民族的文化與環境有何關聯？', p:30},
+    {id:'u1x', t:'臺灣記得你：臺灣玉（延伸學習，不用背）', p:34},
+    {id:'u1r', t:'第一單元總複習'}]},
+  {n:2, c:'#2BA5A0', t:'臺灣登上國際舞臺', l:[
+    {id:'u2l1', t:'第1課　臺灣為什麼在大航海時代崛起？', p:38},
+    {id:'u2l2', t:'第2課　大航海時代在臺灣留下哪些影響？', p:46},
+    {id:'u2x', t:'臺灣記得你：大肚王國（延伸學習，不用背）', p:52},
+    {id:'u2r', t:'第二單元總複習'}]},
+  {n:3, c:'#EE9A3A', t:'成為清帝國的領土', l:[
+    {id:'u3l1', t:'第1課　早期移民如何在臺灣建立家園？', p:56},
+    {id:'u3l2', t:'第2課　開港通商為什麼改變了臺灣的發展？', p:64},
+    {id:'u3x', t:'臺灣記得你：馬偕牧師（延伸學習，不用背）', p:74},
+    {id:'u3r', t:'第三單元總複習'}]},
+  {n:4, c:'#E8705A', t:'土地的利用與變遷', l:[
+    {id:'u4l1', t:'第1課　人們如何適應不同地形創造所需？', p:78},
+    {id:'u4l2', t:'第2課　沿海的利用為什麼呈現多元發展？', p:86},
+    {id:'u4l3', t:'第3課　土地開發與環境保護該如何抉擇？', p:90},
+    {id:'u4x', t:'臺灣記得你：花宅聚落、魯凱族石板屋（延伸學習，不用背）', p:94},
+    {id:'u4r', t:'第四單元總複習'}]},
+  {n:'★', c:'#9B86D6', t:'全冊總複習', l:[
+    {id:'final', t:'全冊大挑戰、農業發展年表、開墾人物'}]}
+];
+
+const LESSONS = {
+  u1l1: {missions:[
+    {id:'world', type:'map', map:'WORLD', title:'世界地圖探險', desc:'在世界地圖上找出五大洲、三大洋、重要緯線和臺灣。'},
+    {id:'quiz1', type:'quiz', title:'航海問答', desc:'世界地圖、大航海時代和福爾摩沙的重點問題。', qs:[
+      {q:'我們生活的世界可以分成幾大洲？', o:['五大洲','四大洲','六大洲','七大洲'], e:'課本把世界分成五大洲：亞洲、美洲、歐洲、非洲和大洋洲。'},
+      {q:'下列哪一個「不是」課本介紹的三大洋？', o:['北冰洋','太平洋','大西洋','印度洋'], e:'三大洋是太平洋、大西洋和印度洋，它們彼此相通，環繞在五大洲周圍。'},
+      {q:'臺灣位在哪一個洲？', o:['亞洲','大洋洲','美洲','歐洲'], e:'臺灣位在亞洲的東部。'},
+      {q:'臺灣的東邊是哪一片大洋？', o:['太平洋','印度洋','大西洋','北冰洋'], e:'從世界地圖可以看到，臺灣在亞洲東邊、太平洋的西側。'},
+      {q:'從世界地圖來看，哪一條線通過臺灣？', o:['北回歸線','赤道','南回歸線','三條線都沒有通過'], e:'北回歸線在北緯23.5度，正好通過臺灣。'},
+      {q:'赤道是幾度的緯線？', o:['0度','23.5度','90度','180度'], e:'赤道是0度緯線，把地球分成北半球和南半球。'},
+      {q:'400多年前，歐洲國家為什麼能到海外探險？', o:['航海技術進步了','發明了飛機','有了衛星導航','鐵路通到了亞洲'], e:'歐洲國家靠著航海技術的進步，積極到海外探險。'},
+      {q:'當時歐洲人繪製世界地圖，主要是為了什麼？', o:['航海和貿易','觀光旅遊','裝飾房子','學校考試'], e:'這些地圖主要用來航海和做生意（貿易）。'},
+      {q:'為什麼當時的世界地圖和今天的差很多？', o:['繪圖技術和工具有限','畫地圖的人故意畫錯','大陸移動得很快','當時的紙張太小'], e:'受到當時繪圖技術和工具的限制，所以和今天的地圖有不少差異。'},
+      {q:'歐洲人看到臺灣風景美麗，稱呼臺灣為什麼？', o:['福爾摩沙','大員','東方之珠','香料群島'], e:'歐洲人稱臺灣為福爾摩沙（Formosa），這個名字到今天仍常用來代表臺灣。'},
+      {q:'17世紀西方地圖上的「大員」，是今天的哪裡？', o:['臺南安平','臺北','高雄','花蓮'], e:'大員就是今天的臺南安平。綠島、蘭嶼也出現在那張古地圖上。'}
+    ]},
+    {id:'match1', type:'match', title:'古地圖配對', desc:'把地名和緯線配上正確的說明。', pairs:[
+      ['大員','今天的臺南安平'],
+      ['福爾摩沙','歐洲人對臺灣的稱呼（Formosa）'],
+      ['赤道','0度緯線，分開北半球和南半球'],
+      ['北回歸線','北緯23.5度，通過臺灣'],
+      ['南回歸線','南緯23.5度']
+    ]},
+    {id:'tw', type:'map', map:'TW', title:'臺灣海陸地圖', desc:'找出臺灣周圍的島嶼、海峽和海洋。'},
+    {id:'monsoon', type:'sort', title:'季風大考驗', desc:'分辨東北季風和西南季風的特色。', prompt:'這是哪一種季風的特色？', cats:['東北季風','西南季風'], items:[
+      {t:'冬季時吹來', c:0},
+      {t:'夏季時吹來', c:1},
+      {t:'大約10月初到隔年4月中', c:0},
+      {t:'大約6月中到9月中', c:1},
+      {t:'從大陸北方吹來，寒冷乾燥', c:0},
+      {t:'從西南方的海上吹來，溫暖潮溼', c:1},
+      {t:'經過海洋帶來水氣，讓北部、東北部溼冷多雨', c:0},
+      {t:'讓全臺灣溼熱多雨', c:1},
+      {t:'北部的冬天又溼又冷，衣服很久才會乾', c:0},
+      {t:'南部的夏天常有大雷雨', c:1}
+    ]},
+    {id:'match2', type:'match', title:'在地生活智慧', desc:'把特產、建築和候鳥配上正確的說明。', pairs:[
+      ['柿餅','新竹新埔：利用冬季強風與日曬，延長柿子的保存期限'],
+      ['騎樓','雲林斗六：房屋一樓留出通道，方便通行購物、遮陽擋雨'],
+      ['地下屋','臺東蘭嶼：主屋建在低於地面1～2公尺的地穴'],
+      ['烏魚子','冬季隨寒流來到西南沿海產卵的烏魚'],
+      ['黑鮪魚文化觀光季','屏東：春夏隨暖流北上洄游的魚'],
+      ['黑面琵鷺','9～10月從北方飛來，在臺南七股溼地度冬']
+    ]},
+    {id:'quiz2', type:'quiz', title:'海洋國家問答', desc:'地理位置、季風、洋流和候鳥的重點問題。', qs:[
+      {q:'臺灣島位在哪裡？', o:['亞洲大陸的東側、太平洋的西側','亞洲大陸的西側、太平洋的東側','歐洲大陸的東側、大西洋的西側','非洲大陸的南側、印度洋的北側'], e:'臺灣位在最大的陸地與最大的海洋交會帶上。'},
+      {q:'臺灣和中國之間隔著哪一個海峽？', o:['臺灣海峽','巴士海峽','麻六甲海峽','直布羅陀海峽'], e:'臺灣與中國隔著臺灣海峽，與菲律賓隔著巴士海峽。'},
+      {q:'臺灣和菲律賓之間隔著哪一個海峽？', o:['巴士海峽','臺灣海峽','白令海峽','麻六甲海峽'], e:'臺灣與菲律賓的距離很近，中間隔著巴士海峽。'},
+      {q:'臺灣四面環海又位置適中，帶來什麼好處？', o:['可以透過航運到東亞各國交流或發展貿易','可以開車到歐洲','一年四季都不會下雨','完全不會受到颱風影響'], e:'透過航運可航向東亞各國，進行交流或發展貿易。'},
+      {q:'臺灣的歷史文化發展，受到哪兩個鄰近國家的影響？', o:['中國與日本','美國與英國','印度與泰國','法國與德國'], e:'臺灣的歷史文化發展受到鄰近的中國與日本影響。'},
+      {q:'我國現在的總面積大約是多少？', o:['約36,000平方公里','約3,600平方公里','約360,000平方公里','約3,600,000平方公里'], e:'我國的範圍總面積約為36,000平方公里。'},
+      {q:'下列哪一個「不是」課本列出的我國範圍？', o:['菲律賓的呂宋島','澎湖群島','金門群島','馬祖列島'], e:'我國範圍包括臺灣島、澎湖群島、金門群島、馬祖列島、釣魚臺列嶼及南海諸島等。'},
+      {q:'我國利用海洋位置的優勢發展產業，下列哪一項課本「沒有」舉例？', o:['採礦業','航運','漁業','觀光'], e:'課本舉的例子是航運、漁業、觀光等，所以我國是名副其實的海洋國家。'},
+      {q:'冬季時，哪一種季風讓臺灣北部、東北部溼冷又容易下雨？', o:['東北季風','西南季風','焚風','龍捲風'], e:'東北季風從大陸北方吹來，經過海洋帶來水氣。'},
+      {q:'西南季風大約在什麼時候吹？', o:['6月中到9月中','10月初到隔年4月中','1月到3月','整年都在吹'], e:'西南季風在夏季帶來溫暖潮溼的氣流，使全臺溼熱多雨。'},
+      {q:'新竹新埔的居民利用什麼，把柿子做成柿餅？', o:['冬季的強風與日曬','夏季的大雷雨','冰箱冷凍','海水浸泡'], e:'柿子採摘後容易腐爛，做成柿餅可以延長保存期限。'},
+      {q:'早期蘭嶼的傳統建築，把主屋建在哪裡？', o:['低於地面1～2公尺的地穴','高高的樹上','海面上的木樁','山頂的洞穴'], e:'可以想想看：蘭嶼四面環海、風很強，把房子蓋得比地面低，比較不怕強風。'},
+      {q:'冬季隨寒流來到臺灣西南沿海產卵的是哪一種魚？', o:['烏魚','黑鮪魚','飛魚','鮭魚'], e:'烏魚的卵可以做成烏魚子，是西南沿海重要的物產。'},
+      {q:'黑鮪魚在什麼季節隨暖流北上洄游？', o:['春、夏','秋、冬','只有冬天','只有秋天'], e:'屏東舉辦的黑鮪魚文化觀光季，已經成為知名的節慶活動。'},
+      {q:'黑面琵鷺大約什麼時候從北方飛到臺灣？', o:['每年9～10月','每年3～5月','每年6～7月','每年12月底'], e:'牠們一直待到隔年3～5月，才陸續飛回北方。'},
+      {q:'黑面琵鷺怎麼找食物？', o:['用扁長的嘴在水中左右擺動','潛到深海抓大魚','在樹上啄蟲','在空中捕捉昆蟲'], e:'臺南七股的鹽田溼地供應牠們豐富的食物。'}
+    ]}
+  ]},
+
+  u1l2: {missions:[
+    {id:'era', type:'sort', title:'史前時代分類', desc:'把遺址和生活特色分到正確的時代。', prompt:'這屬於哪一個時代？', cats:['舊石器時代','新石器時代','金屬器時代'], items:[
+      {t:'長濱遺址', c:0}, {t:'卑南遺址', c:1}, {t:'十三行遺址', c:2},
+      {t:'敲擊石頭，做成打製石器', c:0},
+      {t:'把石頭磨製成石器', c:1},
+      {t:'煉鐵、製造鐵器', c:2},
+      {t:'住在海濱洞穴', c:0},
+      {t:'捕捉海中生物、採集植物、狩獵', c:0},
+      {t:'種植芋頭與稻米', c:1},
+      {t:'開始飼養家畜', c:1},
+      {t:'用陶器儲放物品', c:1},
+      {t:'用石板組成石棺', c:1},
+      {t:'用鐵製鋤頭種田、用鐮刀採收', c:2},
+      {t:'距今約5萬年前開始', c:0},
+      {t:'距今約7,000年前開始', c:1}
+    ]},
+    {id:'relic', type:'match', title:'考古文物配對', desc:'把出土文物配上正確的說明。', pairs:[
+      ['打製石器','長濱遺址的人敲擊石頭製成'],
+      ['石刀','卑南遺址出土，用來切割作物的農具'],
+      ['石板棺','卑南遺址出土二千多具，可見有大規模聚落'],
+      ['煉鐵作坊','十三行遺址發現，證明當時會製造鐵器'],
+      ['琉璃珠','十三行遺址出土，來自東南亞'],
+      ['臺灣玉','出產於花蓮，在多處遺址出土']
+    ]},
+    {id:'sixw', type:'match', title:'六何法練習', desc:'用六何法整理長濱遺址的資料。', pairs:[
+      ['何人','長濱遺址的人們'],
+      ['何事','生活方式為採集、狩獵、打製石器'],
+      ['何時','依生活方式推測為舊石器時代'],
+      ['何地','遺址主要分布在臺東縣'],
+      ['為何','陸地交通受自然環境阻隔，生活用品多就地取材'],
+      ['如何','敲擊石頭做工具，用火燒烤食物和取暖']
+    ]},
+    {id:'quiz', type:'quiz', title:'史前問答', desc:'史前時代、遺址和器物交流的重點問題。', qs:[
+      {q:'沒有文字紀錄的年代，我們稱為什麼？', o:['史前時代','歷史時代','大航海時代','現代'], e:'沒有文字紀錄的年代稱為「史前時代」。'},
+      {q:'我們怎麼知道史前人們的生活方式？', o:['根據考古學家發掘出土的文物來推測','閱讀他們寫下的日記','看當時拍的照片','聽長輩說的親身經歷'], e:'考古學家發掘出土的文物，可以幫助我們推測當時人們的生活。'},
+      {q:'長濱地區的史前人們住在哪裡？', o:['海濱洞穴','石板棺旁的聚落','竹子蓋的房屋','高樓大廈'], e:'長濱的人們住在海濱洞穴，以捕捉海中生物維生，也會採集與狩獵。'},
+      {q:'長濱遺址的人們怎麼製作石器？', o:['敲擊石頭，用銳利的邊緣切割物品','把石頭磨得很光滑','把鐵熔化後倒進模具','用陶土捏出形狀'], e:'敲擊石頭製成的打製石器，是舊石器時代的特色。'},
+      {q:'長濱遺址的人們已經知道用什麼來燒烤食物和取暖？', o:['火','電','太陽能板','瓦斯'], e:'舊石器時代的人們已經知道用火。'},
+      {q:'卑南遺址被歸類為哪一個時代？', o:['新石器時代','舊石器時代','金屬器時代','大航海時代'], e:'卑南遺址的人們把石頭磨製成石器，也會製作陶器，屬於新石器時代。'},
+      {q:'新石器時代的人們開始種植哪些作物？', o:['芋頭與稻米','小麥與玉米','茶葉與咖啡','蘋果與葡萄'], e:'新石器時代的人們運用石器從事農耕，種植芋頭與稻米等作物。'},
+      {q:'為什麼新石器時代會形成聚落？', o:['農耕和飼養家畜讓食物較穩定，人口成長','發明了文字，大家搬到一起讀書','蓋了鐵路，交通變方便','歐洲人來到臺灣建立城市'], e:'食物取得漸趨穩定，帶動人口成長，就形成了聚落。'},
+      {q:'卑南遺址出土二千多具石板棺，可以看出什麼？', o:['當時已有大規模的聚落','當時的人住在洞穴裡','當時已經會煉鐵','當時的人從歐洲來'], e:'大量石板棺顯示當時已有大規模的聚落。'},
+      {q:'十三行遺址的人們從哪裡學會煉鐵技術？', o:['由海外傳入','卑南遺址的人教的','自己看書學會的','長濱遺址的人教的'], e:'十三行遺址的人們學會由海外傳入的煉鐵及製造鐵器技術。'},
+      {q:'鐵器為什麼能提高農作物產量？', o:['鐵製鋤頭和鐮刀更堅固好用，種田和採收更有效率','鐵器會讓土壤自己長出作物','鐵器可以用來祈求下雨','鐵器可以拿去換更多種子'], e:'用鐵製鋤頭種田、用鐮刀採收，提高了作物產量。'},
+      {q:'臺灣玉出產在哪裡？', o:['花蓮','澎湖','臺北','雲林'], e:'臺灣玉出產於花蓮，在卑南等多處遺址都有出土。'},
+      {q:'十三行遺址出土了來自哪裡的琉璃珠？', o:['東南亞','歐洲','非洲','美洲'], e:'十三行遺址出土來自東南亞的琉璃珠，表示當時有跨海交流。'},
+      {q:'史前臺灣玉器出現在東南亞，說明當時的人們具備什麼能力？', o:['航海技術，可以跨海交易','搭飛機運送貨物','用網路下訂單','修建跨海大橋'], e:'這顯示史前人們已具備航海技術，可以跨海交易。'},
+      {q:'舊石器時代大約從距今多久以前開始？', o:['約5萬年前','約500年前','約50年前','約5千萬年前'], e:'課本的時間表中，舊石器時代從距今約5萬年前開始。'},
+      {q:'新石器時代大約從距今多久以前開始？', o:['約7,000年前','約70年前','約70萬年前','約700萬年前'], e:'課本的時間表中，新石器時代從距今約7,000年前開始。'}
+    ]}
+  ]},
+
+  u1l3: {missions:[
+    {id:'tribes', type:'match', title:'原住民族在哪裡', desc:'把族群配上主要分布的地方。', pairs:[
+      ['雅美族（達悟族）','蘭嶼'],
+      ['邵族','日月潭（南投）'],
+      ['賽夏族','新竹、苗栗一帶'],
+      ['鄒族','嘉義山區'],
+      ['卑南族','臺東'],
+      ['排灣族','屏東山區'],
+      ['太魯閣族','花蓮北部'],
+      ['泰雅族','北部山區，分布範圍很大']
+    ]},
+    {id:'culture', type:'sort', title:'部落小百科', desc:'這些傳說和習俗屬於哪一族？', prompt:'這是哪一族的傳說或習俗？', cats:['邵族','雅美族（達悟族）','泰雅族'], items:[
+      {t:'白鹿傳說', c:0},
+      {t:'追逐白鹿發現日月潭，全族搬來定居', c:0},
+      {t:'飛魚之神托夢給族中長老', c:1},
+      {t:'飛魚只能在每年3～10月間食用', c:1},
+      {t:'捕魚時不把飛魚一網打盡', c:1},
+      {t:'住在蘭嶼，文化和海洋關係密切', c:1},
+      {t:'只在11月到4月間狩獵', c:2},
+      {t:'不可獵殺幼小的動物', c:2},
+      {t:'獵人在狩獵期間住在獵寮', c:2},
+      {t:'小米祈福祭儀，由頭目為族人祈福', c:2},
+      {t:'用竹子取水引水、建造家屋', c:2},
+      {t:'共食團體分享獵物', c:2},
+      {t:'共勞團體互相幫忙蓋房子', c:2}
+    ]},
+    {id:'quiz', type:'quiz', title:'原住民族問答', desc:'神話傳說、部落和生態智慧的重點問題。', qs:[
+      {q:'經政府認定的臺灣原住民族共有幾個族群？', o:['16個','9個','12個','20個'], e:'目前經政府認定的原住民族有十六個族群。'},
+      {q:'原住民族透過哪些方式傳承傳統文化？', o:['神話傳說、歌謠、祭典','電視節目、報紙、網路','課本、考試、作業','寫信、發簡訊、打電話'], e:'各族透過神話傳說、歌謠、祭典等方式傳承文化。'},
+      {q:'根據考古研究，原住民族的祖先大約什麼時候遷徙到臺灣？', o:['很可能早在史前時代','大航海時代以後','清帝國時期','日治時期'], e:'考古研究顯示，原住民族的祖先很可能早在史前時代就已遷徙到臺灣。'},
+      {q:'邵族祖先追逐哪一種動物，發現了日月潭？', o:['白鹿','黑熊','山豬','雲豹'], e:'邵族祖先追逐白鹿，發現魚蝦豐富的日月潭，於是全族搬到這裡定居。'},
+      {q:'邵族的白鹿傳說，敘述了什麼？', o:['先民依據自然資源遷徙與定居的過程','族人學會煉鐵的過程','族人和歐洲人做生意的過程','族人建造城牆的過程'], e:'白鹿傳說記錄了先民依據自然資源遷徙與定居的過程。'},
+      {q:'雅美族（達悟族）住在哪裡？', o:['蘭嶼','日月潭','嘉義山區','澎湖'], e:'雅美族（達悟族）住在蘭嶼，許多傳說和文化都和海洋有關。'},
+      {q:'雅美族（達悟族）神話中，族人吃了飛魚後發生什麼事？', o:['全身奇癢難耐','變得力大無窮','可以在水裡呼吸','長出了翅膀'], e:'後來飛魚之神托夢給長老，教導正確的食用方法與禮儀。'},
+      {q:'雅美族（達悟族）規範捕魚的季節，主要是為了什麼？', o:['讓飛魚不因大量捕食而滅絕，維持海洋生態平衡','讓漁船有時間休息保養','讓觀光客可以來看飛魚','讓飛魚長得更大更好吃'], e:'這說明原住民族的祖先早已有生態保育的智慧。'},
+      {q:'雅美族（達悟族）相信飛魚只能在什麼時候食用？', o:['每年3～10月間','每年11月到隔年2月','只有過年的時候','一年四季都可以'], e:'他們相信飛魚是上天賜予的神聖物品，只能在每年3～10月間食用。'},
+      {q:'部落通常是由什麼組成的？', o:['許多家族','許多國家','許多學校','許多公司'], e:'部落是早期原住民族生活的中心，通常由許多家族所組成。'},
+      {q:'部落的祭典、狩獵等重要事務，由誰決定？', o:['頭目或祭司決定，或由部落會議決議','由外國商人決定','由小孩子抽籤決定','由清帝國官員決定'], e:'決定之後，所有部落成員都必須共同承擔與遵守。'},
+      {q:'泰雅族只在11月到4月間狩獵，原因是什麼？', o:['讓動物有繁殖生長的時間','因為其他月份太熱了','因為其他月份要上學','因為獵寮只在冬天開放'], e:'在保持狩獵傳統的同時，也維持了生態平衡。'},
+      {q:'泰雅族的「共勞團體」會做什麼？', o:['相互幫忙建造房屋','一起分享獵物','一起舉行選舉','一起去海外貿易'], e:'共食團體分享獵物，共勞團體相互幫忙建造房屋。'},
+      {q:'共享與互助的文化，對部落有什麼作用？', o:['穩定部落、凝聚族群的力量','讓部落變成城市','讓族人不用再工作','讓部落不再舉行祭典'], e:'共享及互助的文化，是穩定部落與凝聚族群的力量。'}
+    ]}
+  ]},
+
+  u1x: {missions:[
+    {id:'jade', type:'quiz', title:'臺灣玉小知識', desc:'延伸學習，不用背，看看你記得多少。', qs:[
+      {q:'卑南遺址是在什麼時候被發現的？', o:['民國69年南迴鐵路施工時','民國69年蓋機場時','清帝國開港通商時','荷蘭人來臺灣時'], e:'南迴鐵路施工時發現史前文物，後來由考古團隊挖掘。'},
+      {q:'卑南遺址是太平洋沿岸規模最大的什麼？', o:['石板棺墓葬群','煉鐵作坊','海濱洞穴','貿易港口'], e:'卑南遺址出土約二千座石板棺，也是臺灣考古史上挖掘範圍最大的遺址。'},
+      {q:'國寶「人獸形耳飾」是什麼樣子？', o:['兩個站立的人形，頭上一起頂著一隻動物','一隻飛魚繞成圓圈','一艘帆船上站著三個人','一頭白鹿站在湖邊'], e:'推測顯示雙人合作的精神，動物則代表豐富的獵物。'},
+      {q:'臺灣玉曾經傳播到哪些地方？', o:['綠島、蘭嶼、菲律賓北部、越南、泰國南部','日本、韓國、中國北方','歐洲、非洲','美洲、澳洲'], e:'臺灣玉在環南海的東南亞地區很受歡迎。'},
+      {q:'從臺灣玉在南海地區的分布，可以知道海洋對史前人們來說是什麼？', o:['道路，而不是阻隔','無法跨越的障礙','只能用來捕魚的地方','危險、不能靠近的地方'], e:'海洋讓史前人們可以往來交流與貿易。'}
+    ]}
+  ]},
+
+  u1r: {missions:[
+    {id:'mix', type:'quiz', title:'單元大考驗', desc:'從第1到第3課隨機出15題，每次都不一樣。', from:['u1l1','u1l2','u1l3'], count:15},
+    {id:'timeline', type:'order', title:'時光排序', desc:'把發生的事情依照時間先後排好。', prompt:'從最早發生的開始，依序點選', items:[
+      '長濱遺址的人住在海濱洞穴，打製石器',
+      '卑南遺址的人種稻米、芋頭，形成大聚落',
+      '十三行遺址的人學會煉鐵，用鐵器種田',
+      '歐洲人航行到東亞，稱臺灣為福爾摩沙'
+    ]}
+  ]}
+,
+  u2l1: {missions:[
+    {id:'power', type:'sort', title:'勢力大分類', desc:'這件事是荷蘭人、西班牙人還是鄭氏政權？', prompt:'這是哪一個勢力？', cats:['荷蘭人','西班牙人','鄭氏政權'], items:[
+      {t:'西元1624年來到臺灣', c:0},
+      {t:'西元1626年派兵進入臺灣北部', c:1},
+      {t:'先在印尼設立據點', c:0},
+      {t:'先以菲律賓為主要據點', c:1},
+      {t:'以臺南為根據地', c:0},
+      {t:'在基隆、淡水建立城堡', c:1},
+      {t:'建立熱蘭遮城、普羅民遮城', c:0},
+      {t:'建立聖薩爾瓦多城、聖多明哥城', c:1},
+      {t:'招募漢人開墾，轉賣蔗糖、鹿皮', c:0},
+      {t:'貿易增長有限，維持據點又太花錢', c:1},
+      {t:'從金門出兵，途經澎湖，在鹿耳門登陸', c:2},
+      {t:'在臺南設立承天府為行政中心', c:2},
+      {t:'第一個在臺灣的漢人政權', c:2},
+      {t:'迫使荷蘭人在1662年退出臺灣', c:2}
+    ]},
+    {id:'forts', type:'match', title:'古蹟今昔', desc:'把當年的城堡配上今天的古蹟。', pairs:[
+      ['熱蘭遮城','今天的安平古堡'],
+      ['普羅民遮城','今天的赤崁樓'],
+      ['聖多明哥城','西班牙人在淡水建的，荷蘭人在附近重建成紅毛城'],
+      ['聖薩爾瓦多城','西班牙人在基隆和平島建的第一座城堡'],
+      ['承天府','鄭成功以普羅民遮城作為辦公地點'],
+      ['鹿耳門','鄭成功登陸臺灣的地方（今臺南市）']
+    ]},
+    {id:'people', type:'match', title:'人物配對', desc:'把大航海時代的人物配上他的事蹟。', pairs:[
+      ['鄭芝龍','活躍於東亞海域的海盜、海商，也是官員'],
+      ['顏思齊','傳說從北港登陸，招募漢人在雲林、嘉義開墾'],
+      ['鄭成功','明帝國皇帝賜國姓，封延平郡王，人稱國姓爺'],
+      ['鄭經','鄭成功的兒子，接續經營臺灣近二十年'],
+      ['陳永華','輔佐鄭經的大臣'],
+      ['施琅','清帝國派他帶兵進攻臺灣']
+    ]},
+    {id:'timeline', type:'order', title:'時光排序', desc:'把大航海時代的大事依照時間排好。', prompt:'從最早發生的開始，依序點選', items:[
+      '歐洲人透過新航路來到亞洲，尋找瓷器、絲綢、香料',
+      '荷蘭人來到臺灣，以臺南為根據地',
+      '西班牙人派兵進入臺灣北部',
+      '荷蘭人趕走西班牙人，控制臺灣北部',
+      '鄭成功迫使荷蘭人退出臺灣',
+      '臺灣納入清帝國版圖'
+    ], years:['西元十六世紀','西元1624年','西元1626年','西元1642年','西元1662年','西元1684年']},
+    {id:'quiz', type:'quiz', title:'大航海問答', desc:'大航海時代各族群來臺的重點問題。', qs:[
+      {q:'西元十六世紀，歐洲國家到亞洲主要想尋找哪些商品？', o:['瓷器、絲綢、香料','石油、煤炭、鐵礦','汽車、電腦、手機','小麥、玉米、咖啡'], e:'瓷器和絲綢的產地在中國，香料則在印度和東南亞。'},
+      {q:'臺灣為什麼在大航海時代吸引各族群來建立據點？', o:['位在東亞海運的中途要道','有很多金礦','天氣一直很冷','離歐洲最近'], e:'臺灣位於東亞海運的中途要道，從此登上國際舞臺。'},
+      {q:'歐洲人來臺以前，除了原住民，還有哪些人在臺灣活動？', o:['躲避風浪的漁民，以及中國、日本的海商和海盜','美國的觀光客','法國的軍隊','英國的傳教士'], e:'漁民到島上躲避風浪、和原住民交換物品，海商和海盜也以臺灣為據點交易。'},
+      {q:'傳說顏思齊與鄭芝龍招募漢人來臺，在今天的哪裡開墾？', o:['雲林、嘉義一帶','臺北、基隆一帶','花蓮、臺東一帶','澎湖、金門一帶'], e:'雲林縣水林鄉的顏厝寮，傳說是漢人在臺最早的開墾地之一。'},
+      {q:'荷蘭人到亞洲後，先在哪裡設立據點？', o:['印尼','菲律賓','日本','韓國'], e:'荷蘭人先在印尼設立據點，西元1624年來到臺灣。'},
+      {q:'荷蘭人在西元哪一年來到臺灣？', o:['1624年','1626年','1662年','1684年'], e:'荷蘭人在1624年來到臺灣，以臺南為根據地。'},
+      {q:'荷蘭人建立的熱蘭遮城，就是今天的什麼？', o:['安平古堡','赤崁樓','紅毛城','孔廟'], e:'熱蘭遮城是今天的安平古堡，普羅民遮城是今天的赤崁樓。'},
+      {q:'荷蘭人從中國招募漢人到臺灣做什麼？', o:['開墾農田','建造鐵路','開採石油','當外交官'], e:'荷蘭人招募漢人開墾，再把蔗糖、鹿皮等轉賣到其他國家。'},
+      {q:'為什麼說臺灣成為當時的「貿易轉運站」？', o:['荷蘭人在臺灣收購、轉賣各地的商品','臺灣有很多火車站','臺灣是世界最大的工廠','所有船都必須在臺灣修理'], e:'荷蘭人把蔗糖、鹿皮轉賣到其他國家，也在這裡交易絲織品、銀與香料。'},
+      {q:'荷蘭人收購的鹿皮大量賣到哪裡？用來做什麼？', o:['日本，製作武士服裝','歐洲，製作書本封面','中國，製作鞋子','東南亞，製作船帆'], e:'鹿皮透氣、柔軟又耐磨。高峰期每年出口超過10萬張。'},
+      {q:'荷蘭人大量出口鹿皮，可能對臺灣生態造成什麼影響？', o:['梅花鹿大量減少','梅花鹿變得更多','森林面積變大','海裡的魚變多'], e:'這是課本「想一想」的問題：大量捕捉梅花鹿，會讓野生梅花鹿減少。'},
+      {q:'西班牙人在東亞海域，先以哪裡為主要據點？', o:['菲律賓','印尼','日本','越南'], e:'西班牙人先以菲律賓為主要據點，1626年派兵進入臺灣北部。'},
+      {q:'西班牙人為什麼要進入臺灣北部？', o:['和荷蘭人爭奪與中國、日本貿易的航路與商品','想要找金礦','想要來觀光','因為船迷路了'], e:'西班牙人想和占領南部的荷蘭人競爭貿易。'},
+      {q:'西班牙人為什麼後來減少對臺灣北部的重視？', o:['貿易增長有限，維持據點又需要龐大經費','臺灣北部太熱了','原住民邀請他們離開','他們找到了更大的島'], e:'荷蘭人得知後便派兵攻打，迫使西班牙人撤離。'},
+      {q:'紅毛城的前身是什麼？', o:['西班牙人在淡水建造的聖多明哥城','鄭成功的承天府','清帝國的砲臺','荷蘭人的熱蘭遮城'], e:'荷蘭人趕走西班牙人後，在原址附近重新建造城堡，就是今天的紅毛城。'},
+      {q:'鄭成功為什麼決定把軍隊移到臺灣？', o:['在中國反抗清帝國，戰事接連受挫','想去尋找香料','被荷蘭人邀請','想要開港通商'], e:'鄭成功帶領不願投降清帝國的軍民，以中國東南沿海為根據地反抗，失利後轉向臺灣。'},
+      {q:'鄭成功攻臺的路線是？', o:['從金門出兵，途經澎湖，在鹿耳門登陸','從日本出發，在基隆登陸','從菲律賓出發，在高雄登陸','從印尼出發，在花蓮登陸'], e:'鹿耳門在今天的臺南市。'},
+      {q:'荷蘭人在哪一年退出臺灣？', o:['1662年','1624年','1642年','1684年'], e:'荷蘭人敗給鄭氏軍隊後，雙方訂定條約，荷蘭人帶走糧食與財產離開。'},
+      {q:'第一個在臺灣的漢人政權是？', o:['鄭氏政權','荷蘭人','西班牙人','清帝國'], e:'鄭成功在臺南設立承天府為行政中心。'},
+      {q:'鄭成功為什麼被稱為「國姓爺」？', o:['明帝國皇帝賜他國姓「朱」','他的名字裡有「國」字','他建立了一個新國家','他是第一任臺灣巡撫'], e:'鄭成功也被封為延平郡王，逝世後被民間尊稱為開臺聖王。'},
+      {q:'臺灣在西元哪一年正式納入清帝國版圖？', o:['1684年','1662年','1624年','1885年'], e:'鄭經過世後內部紛爭，清帝國派施琅進攻，臺灣在1684年納入清帝國版圖。'}
+    ]}
+  ]},
+
+  u2l2: {missions:[
+    {id:'legacy', type:'sort', title:'誰留下的？', desc:'這些影響是荷蘭人、西班牙人還是鄭氏政權留下的？', prompt:'這是誰留下的影響？', cats:['荷蘭人','西班牙人','鄭氏政權'], items:[
+      {t:'傳播基督教', c:0},
+      {t:'傳播天主教', c:1},
+      {t:'用羅馬字母拼寫原住民語言', c:0},
+      {t:'在基隆和平島建立教堂', c:1},
+      {t:'引進黃牛', c:0},
+      {t:'引進荷蘭豆（豌豆）', c:0},
+      {t:'引進土芒果', c:0},
+      {t:'把東北角海岸命名為聖地牙哥（三貂角）', c:1},
+      {t:'新營、林鳳營、左營、前鎮等地名', c:2},
+      {t:'在臺南興建全臺第一座孔廟', c:2},
+      {t:'劍獅的形象（傳說來自軍隊盾牌上的獅面）', c:2},
+      {t:'派軍隊到各地屯墾，解決糧食需求', c:2}
+    ]},
+    {id:'traces', type:'match', title:'文化足跡配對', desc:'地名、物產和信仰的由來。', pairs:[
+      ['三貂角','由西班牙語「聖地牙哥」的發音轉化而成'],
+      ['左營、前鎮','「營」和「鎮」是鄭氏軍事單位的名稱'],
+      ['荷蘭豆','荷蘭人引進的豌豆'],
+      ['全臺首學','臺南孔廟，清帝國時期曾作為學校'],
+      ['劍獅','用來驅邪祈福，形象據說源於鄭氏軍隊的盾牌'],
+      ['玄天上帝','隨漢人移民傳入，臺南北極殿有供奉']
+    ]},
+    {id:'quiz', type:'quiz', title:'文化影響問答', desc:'歐洲人和鄭氏政權留下哪些影響？', qs:[
+      {q:'第一次來臺灣發展的西方人是誰？', o:['荷蘭人和西班牙人','英國人和法國人','美國人和德國人','日本人和琉球人'], e:'荷蘭人和西班牙人是西方人首度來臺發展。'},
+      {q:'荷蘭人在臺灣傳播什麼宗教？', o:['基督教','天主教','佛教','道教'], e:'荷蘭人傳播基督教，西班牙人傳播天主教。'},
+      {q:'西班牙傳教士在哪裡建立教堂、傳播天主教？', o:['基隆和平島','臺南安平','高雄左營','花蓮'], e:'和平島的教堂遺址還出土了西班牙十字架。'},
+      {q:'荷蘭傳教士怎麼幫助原住民學習聖經？', o:['用羅馬字母拼寫原住民的語言','教原住民說西班牙語','翻譯成日文','只用圖畫說明'], e:'荷蘭人離臺一百多年後，原住民與漢人簽土地契約時，仍持續使用羅馬字母書寫。'},
+      {q:'下列哪一樣「不是」課本說的荷蘭人引進臺灣的東西？', o:['茶葉','黃牛','荷蘭豆（豌豆）','土芒果'], e:'荷蘭人為了開發土地、發展貿易，引進了黃牛、荷蘭豆和土芒果等。'},
+      {q:'三貂角這個地名是怎麼來的？', o:['由西班牙語「聖地牙哥」的發音轉化而成','因為那裡有很多貂','鄭成功的軍隊取的','荷蘭人用羅馬字母拼的'], e:'西班牙人把東北角海岸命名為聖地牙哥（San Tiago）。'},
+      {q:'新營、林鳳營、左營、前鎮這些地名，和什麼有關？', o:['鄭氏政權的軍隊駐守屯墾','西班牙人建的城堡','荷蘭人的教堂','原住民的部落名稱'], e:'「營」和「鎮」都是鄭氏軍事單位的名稱。'},
+      {q:'鄭氏政權為什麼派軍隊到各地從事農業活動？', o:['解決糧食需求','為了觀光','為了尋找金礦','為了蓋鐵路'], e:'鄭氏政權對內派士兵屯墾，對外和中國、日本及東南亞貿易。'},
+      {q:'鄭氏政權出口哪些商品獲取利益？', o:['蔗糖、鹿皮','茶葉、樟腦','石油、煤礦','汽車、電子產品'], e:'鄭氏政權也進口民生與軍火物資，維繫統治和經濟發展。'},
+      {q:'鄭氏政權為什麼只能用走私的方式貿易？', o:['和清帝國處於戰爭狀態','沒有船可以用','荷蘭人禁止他們','商品太少了'], e:'因為與清帝國處於戰爭狀態，只能以走私方式交易物品。'},
+      {q:'全臺第一座孔廟在哪裡？', o:['臺南','臺北','鹿港','淡水'], e:'在陳永華的規劃下興建，清帝國時期曾作為學校，被稱為「全臺首學」。'},
+      {q:'陳永華對鄭氏政權有什麼貢獻？', o:['主管內政、推動海上貿易、興辦學校','帶兵趕走西班牙人','引進黃牛和芒果','發明羅馬字母'], e:'後人為了感念他，以他的名字命名了寺廟和道路。'},
+      {q:'漢人移民傳入臺灣的信仰有哪些？', o:['玄天上帝、媽祖','基督教、天主教','飛魚祭','白鹿傳說'], e:'移民把故鄉的習俗和信仰帶來臺灣，並在各地建立廟宇。'},
+      {q:'用來驅邪祈福的劍獅，形象據說來自哪裡？', o:['鄭氏軍隊在盾牌上畫的獅面','荷蘭人的國旗','西班牙人的十字架','原住民的陶罐'], e:'劍獅據說源於鄭氏軍隊盾牌上的獅面。'},
+      {q:'鄭氏政權怎麼為臺灣的漢人社會發展建立基礎？', o:['推行漢人的教育與文化','推廣羅馬字母','傳播天主教','引進西方醫學'], e:'荷蘭人和鄭氏政權持續招募漢人，漢人移民大增。'}
+    ]}
+  ]},
+
+  u2x: {missions:[
+    {id:'dadu', type:'quiz', title:'大肚王國小知識', desc:'延伸學習，不用背，看看你記得多少。', qs:[
+      {q:'大肚王國是由誰建立的？', o:['臺灣中部的平埔族群共同建立的部落聯盟','荷蘭人','鄭成功','西班牙人'], e:'大肚社的頭目受到鄰近各社擁戴，被推舉為大肚王。'},
+      {q:'我們是從什麼記載知道大肚王的？', o:['荷蘭人的巴達維亞城日誌','清帝國的考試卷','日本的報紙','鄭成功的日記'], e:'日誌記載臺灣中部曾出現一位領導者，稱他為大肚王。'},
+      {q:'荷蘭人和大肚王國最後怎麼結束戰爭？', o:['在荷蘭牧師協調下簽訂和平條約','大肚王國打敗荷蘭人','西班牙人出面調停','鄭成功出兵幫忙'], e:'大肚王國歸順荷蘭人，但大肚王仍是王國的實際統治者。'},
+      {q:'大肚王規定王國境內不可以做什麼？', o:['傳播基督教','種稻米','狩獵梅花鹿','和鄰近各社來往'], e:'在荷蘭人離開前，大肚王國一直維持自我管理。'},
+      {q:'大肚王國後來為什麼沒落？', o:['鄭氏政權派兵進入，逼迫交出領地和糧食','發生大地震','族人全部搬到國外','被西班牙人占領'], e:'各部落起來反抗，許多族人喪生，少數倖存者遷往中部山區。'}
+    ]}
+  ]},
+
+  u2r: {missions:[
+    {id:'mix', type:'quiz', title:'單元大考驗', desc:'從第1、第2課隨機出15題，每次都不一樣。', from:['u2l1','u2l2'], count:15}
+  ]},
+
+  u3l1: {missions:[
+    {id:'riot', type:'sort', title:'民變還是械鬥？', desc:'分辨民變和械鬥。', prompt:'這是民變還是械鬥？', cats:['民變','械鬥'], items:[
+      {t:'民眾反抗政府統治的事件', c:0},
+      {t:'武裝群體之間的衝突', c:1},
+      {t:'林爽文事件', c:0},
+      {t:'朱一貴事件', c:0},
+      {t:'戴潮春事件', c:0},
+      {t:'官員貪汙、管理不當，民眾不滿政府', c:0},
+      {t:'為了保護土地、爭奪水源而起衝突', c:1},
+      {t:'漳州人在芝山岩對抗泉州人', c:1},
+      {t:'在半山腰建造隘門作為防衛', c:1},
+      {t:'新竹義民廟紀念在事件中犧牲的先民', c:0}
+    ]},
+    {id:'ports', type:'match', title:'水圳與港口', desc:'把水圳、港口和老街配上正確的說明。', pairs:[
+      ['八堡圳','施世榜投資開發，帶動員林街形成'],
+      ['一府','府城（今臺南市）'],
+      ['二鹿','鹿港'],
+      ['三艋舺','艋舺（今臺北市萬華區）'],
+      ['不見天街','鹿港五福街，商家蓋涼亭防風避雨'],
+      ['五條港','臺南早期重要的商用河港'],
+      ['剝皮寮老街','艋舺保存清帝國時期的生活街區']
+    ]},
+    {id:'quiz', type:'quiz', title:'移民開墾問答', desc:'渡臺、開墾、民變械鬥和漢化的重點問題。', qs:[
+      {q:'清帝國將臺灣納入版圖後，為什麼限制人民渡海來臺？', o:['防止過多漢人移入而發生反叛','怕臺灣人太多會塞車','因為臺灣沒有土地','因為海上有海盜'], e:'規定要先向官府申請，而且不准攜帶家眷。'},
+      {q:'清帝國的渡臺禁令規定了什麼？', o:['須先向官府申請，且不准攜帶家眷','只能搭大船','每個人都可以自由來臺','只准帶小孩來臺'], e:'即使限制很多，仍有人選擇偷渡來臺。'},
+      {q:'為什麼福建、廣東一帶的人想到臺灣開墾？', o:['人口成長導致米糧不足、耕地有限','想要逃避上學','臺灣有很多工廠','臺灣的房子比較便宜'], e:'臺灣的自然環境適合水稻生長，吸引許多人來開墾。'},
+      {q:'下列哪一個「不是」清帝國時期著名的水圳？', o:['五條港','瑠公圳','八堡圳','曹公圳'], e:'五條港是臺南早期的商用河港，不是水圳。'},
+      {q:'施世榜為什麼投資開發八堡圳？', o:['穩定的灌溉水源能提高稻米產量、增加土地價格','為了蓋游泳池','為了發電','為了養魚'], e:'八堡圳的興建吸引許多人前來開墾，形成員林街。'},
+      {q:'興建八堡圳時，林先生教人們用什麼方法引水？', o:['把竹子編成竹簍、裝石塊放在溪中，擋高水位','用抽水馬達抽水','挖很深的井','用水桶一桶一桶提'], e:'擋高溪水的水位，就能把溪水順利引入水圳。'},
+      {q:'清帝國時期，臺灣主要向中國輸出什麼？', o:['稻米、蔗糖','藥材、布匹','茶葉、樟腦','鐵器、武器'], e:'臺灣輸出稻米、蔗糖，輸入藥材、布匹等日常用品。'},
+      {q:'「一府二鹿三艋舺」的「一府」是指哪裡？', o:['府城（今臺南市）','新竹','鳳山','宜蘭'], e:'府城、鹿港、艋舺是當時臺灣三大貿易港口。'},
+      {q:'鹿港的「不見天街」是怎麼來的？', o:['商家蓋起遮住天空的涼亭，防風避雨','街上的房子都沒有窗戶','那條街只在晚上開放','街道建在地下'], e:'鹿港五福街（今中山路）店鋪林立。'},
+      {q:'什麼是「民變」？', o:['民眾反抗政府統治的事件','武裝群體之間的衝突','西方國家攻打臺灣','移民偷渡來臺'], e:'清帝國時期規模最大的民變是林爽文事件。'},
+      {q:'什麼是「械鬥」？', o:['武裝群體之間的衝突','民眾反抗政府統治','和外國打仗','官員之間吵架'], e:'不同族群為了保護土地、爭奪水源或利益，時常爆發械鬥。'},
+      {q:'清帝國時期規模最大的民變是哪一個？', o:['林爽文事件','朱一貴事件','戴潮春事件','牡丹社事件'], e:'林爽文見官員欺壓人民而率眾反抗，演變成全臺動亂。'},
+      {q:'為什麼清帝國時期常發生民變？', o:['官員貪汙、管理不當，無法有效維持社會秩序','人民太有錢了','外國人鼓勵','天氣太熱'], e:'這反映出清帝國在臺灣的統治薄弱。'},
+      {q:'芝山岩的漳州人為了對抗泉州人，蓋了什麼作為防衛？', o:['隘門','砲臺','鐵路','燈塔'], e:'他們以芝山岩為避難所，在半山腰建造隘門。'},
+      {q:'清帝國為了避免漢人侵犯山地原住民，做了什麼？', o:['劃設界線隔離','建造萬里長城','把原住民遷到國外','禁止所有人上山'], e:'但漢人越來越多，常越界開墾，山區原住民的生活空間持續縮減。'},
+      {q:'吳沙招募漢人到哪裡開墾，和噶瑪蘭族發生衝突？', o:['宜蘭','臺南','屏東','澎湖'], e:'部分噶瑪蘭族人留下與漢人通婚，部分遷居花蓮等地。'},
+      {q:'清帝國時期，平埔族群受到漢人文化什麼影響？', o:['讀漢文、使用漢姓，語言和文化快速流失','改信天主教','開始說荷蘭語','搬到國外居住'], e:'生活在深山的原住民受漢化影響較少，仍能保有原來的文化。'}
+    ]}
+  ]},
+
+  u3l2: {missions:[
+    {id:'trade', type:'match', title:'通商港口', desc:'開港通商的港口、市街和洋行。', pairs:[
+      ['雞籠','今天的基隆'],
+      ['淡水','茶、樟腦由這裡出口'],
+      ['安平','今臺南，糖由這裡出口'],
+      ['打狗','今高雄，有臺灣第一個外國正式領事館'],
+      ['大稻埕','茶、樟腦集散的新興市街（今臺北市大同區）'],
+      ['東興洋行','德國商人在臺南設立，以糖為主要出口']
+    ]},
+    {id:'build', type:'sort', title:'建設大分類', desc:'這是哪一個事件之後的建設？', prompt:'這是哪個事件之後的建設？', cats:['牡丹社事件後（沈葆楨）','清法戰爭後（劉銘傳）'], items:[
+      {t:'二鯤鯓砲臺，第一座西式砲臺', c:0},
+      {t:'興建恆春城', c:0},
+      {t:'在南部港口設置西式砲臺', c:0},
+      {t:'修建基隆到新竹之間的鐵路', c:1},
+      {t:'購置新式輪船通行兩岸', c:1},
+      {t:'架設電報系統', c:1},
+      {t:'騰雲號火車頭', c:1},
+      {t:'臺灣建省，擔任首任巡撫', c:1}
+    ]},
+    {id:'people', type:'match', title:'人物配對', desc:'清帝國後期來臺的重要人物。', pairs:[
+      ['沈葆楨','牡丹社事件後來臺，興建砲臺與恆春城'],
+      ['劉銘傳','清法戰爭時來臺指揮，臺灣首任巡撫'],
+      ['斯文豪','英國外交官，許多臺灣物種以他命名'],
+      ['馬雅各','在臺灣南部開設全臺第一座西式醫館'],
+      ['馬偕','在北部以免費拔牙傳教，創辦理學堂大書院'],
+      ['巴克禮','創辦臺南神學院，發行臺灣第一份報紙']
+    ]},
+    {id:'sixw', type:'match', title:'六何法練習', desc:'用六何法整理斯文豪的資料。', pairs:[
+      ['何人','斯文豪'],
+      ['何事','以外交官員的身分來到臺灣'],
+      ['何時','清帝國統治後期'],
+      ['何地','打狗（高雄）、淡水'],
+      ['為何','深入臺灣山林，採集記錄物種'],
+      ['如何','發現臺灣許多物種並為牠們命名']
+    ]},
+    {id:'quiz', type:'quiz', title:'開港通商問答', desc:'開港、建設和西方人來臺的重點問題。', qs:[
+      {q:'西元1860年代，清帝國被迫開放臺灣哪些港口通商？', o:['雞籠、淡水、安平、打狗','鹿港、艋舺、府城、恆春','花蓮、臺東、宜蘭、澎湖','金門、馬祖、蘭嶼、綠島'], e:'雞籠是今基隆，安平在今臺南，打狗是今高雄。'},
+      {q:'西方商人在臺灣港口設立什麼來做生意？', o:['洋行','孔廟','砲臺','水圳'], e:'西方國家設立領事館作為官員辦公場所，商人則設立洋行。'},
+      {q:'開港通商後，臺灣主要外銷哪些商品？', o:['茶葉、糖、樟腦','稻米、鹿皮、香料','石油、煤炭、鐵','瓷器、絲綢、銀'], e:'洋行把臺灣的茶葉、糖、樟腦外銷到世界各國。'},
+      {q:'茶和樟腦主要從哪個港口出口？', o:['淡水','安平','打狗','鹿港'], e:'茶、樟腦由淡水出口，糖則由安平、打狗出口。'},
+      {q:'大稻埕為什麼會成為新興市街？', o:['臨近淡水港，北部的茶葉、樟腦在這裡集散','那裡有很多金礦','那裡是政府所在地','那裡有機場'], e:'大稻埕在今天的臺北市大同區。'},
+      {q:'開港通商後，臺灣的經濟重心怎麼移動？', o:['由南往北轉移','由北往南轉移','由西往東轉移','完全沒有改變'], e:'因為茶與樟腦的產地主要在北部。'},
+      {q:'臺灣第一個外國正式領事館是哪一個？', o:['英國在高雄設立的打狗領事館','德國在臺南的東興洋行','西班牙人的聖多明哥城','荷蘭人的熱蘭遮城'], e:'東興洋行是德國商人在臺南設立的洋行，不是領事館。'},
+      {q:'牡丹社事件中，日本用什麼當作出兵的藉口？', o:['琉球人民在臺灣南端遭原住民殺害','臺灣不賣茶葉給日本','日本人想要觀光','清帝國先攻打日本'], e:'1871年琉球人漂流到臺灣南端，三年後（1874年）日本出兵攻打牡丹社等部落。'},
+      {q:'牡丹社事件後，清帝國派誰來臺加強防務？', o:['沈葆楨','劉銘傳','鄭成功','施琅'], e:'沈葆楨興建砲臺、調派駐防軍隊。'},
+      {q:'牡丹社事件後，清帝國對臺灣的治理有什麼轉變？', o:['開始重視臺灣的海防建設','決定放棄臺灣','開始限制人民渡臺','把臺灣交給日本'], e:'清帝國驚覺外國勢力的野心，在南部港口設置西式砲臺、興建恆春城。'},
+      {q:'恆春城的城牆為什麼設計成凹凸狀？', o:['提供掩護，也方便射擊槍砲','比較好看','節省磚塊','讓風吹得進來'], e:'恆春城加強了臺灣南部的發展與軍事防禦。'},
+      {q:'西元1884年，清帝國和哪一國發生戰爭，戰火波及基隆、淡水？', o:['法國','日本','英國','荷蘭'], e:'清帝國派劉銘傳來臺指揮作戰。'},
+      {q:'臺灣在哪一年建省？', o:['1885年','1684年','1874年','1860年'], e:'臺灣原屬福建省，1885年建省，劉銘傳擔任首任巡撫。'},
+      {q:'下列哪一項「不是」清法戰爭後推動的現代化建設？', o:['興建八堡圳','修建基隆到新竹的鐵路','購置新式輪船','架設電報系統'], e:'八堡圳是更早由施世榜投資開發的水圳。'},
+      {q:'騰雲號是什麼？', o:['劉銘傳興建鐵路時購入的火車頭','鄭成功的戰船','荷蘭人的商船','斯文豪發現的鳥'], e:'鐵路、輪船和電報，是臺灣邁向現代化發展的起點。'},
+      {q:'斯文豪以什麼身分來到臺灣？', o:['英國外交官員','法國軍人','荷蘭傳教士','日本商人'], e:'他深入山林調查鳥類、蛙類及哺乳類，許多新物種以他命名。'},
+      {q:'斯文豪發表的哪一本書，是臺灣第一份鳥類紀錄？', o:['《福爾摩沙鳥類誌》','《臺灣府城教會報》','《巴達維亞城日誌》','《聖經》'], e:'臺灣將近三分之一的鳥類是由斯文豪發現的。'},
+      {q:'全臺第一座西式醫館是誰開設的？', o:['馬雅各','馬偕','巴克禮','斯文豪'], e:'馬雅各在臺灣南部把醫病和傳教結合推展。'},
+      {q:'馬偕在臺灣北部用什麼方式傳教？', o:['免費拔牙','發放金幣','舉辦運動會','開設餐廳'], e:'馬偕也創辦理學堂大書院，並設立淡水女學堂提倡女子教育。'},
+      {q:'臺灣第一份報紙是什麼？', o:['臺灣府城教會報','福爾摩沙鳥類誌','巴達維亞城日誌','全臺首學'], e:'巴克禮在1885年發行，就是今天的臺灣教會公報。'},
+      {q:'巴克禮把聖經翻譯成什麼？', o:['台語羅馬字','荷蘭文','日文','英文'], e:'巴克禮也從英國引進現代化的印刷技術。'},
+      {q:'傳教士為什麼要同時推動醫療或辦學校？', o:['幫助民眾、拉近距離，讓人更願意了解西方文化','因為傳教士不會說話','政府規定的','為了賺錢'], e:'傳教士曾因文化差異和民眾發生誤解，但隨著接觸頻繁，西方文化逐漸被了解。'}
+    ]}
+  ]},
+
+  u3x: {missions:[
+    {id:'mackay', type:'quiz', title:'馬偕牧師小知識', desc:'延伸學習，不用背，看看你記得多少。', qs:[
+      {q:'馬偕在西元哪一年抵達淡水？', o:['1872年','1662年','1885年','1924年'], e:'他望著觀音山和淡水河的景色，在日記裡寫下「就是這個地方了」。'},
+      {q:'馬偕為了順利傳教，努力學習什麼？', o:['漢文和台語','荷蘭語','日語','法語'], e:'他開始用簡單的台語布道。'},
+      {q:'馬偕從國外引進哪些蔬菜種子給農民？', o:['胡蘿蔔、花椰菜','高麗菜、空心菜','芋頭、地瓜','稻米、小米'], e:'他也提供免費醫療、傳播公共衛生知識。'},
+      {q:'馬偕在淡水建的牛津學堂，又叫什麼？', o:['理學堂大書院','全臺首學','臺南神學院','淡水女學堂'], e:'除了聖經，還教天文地理、物理化學、醫學解剖等西方科學。'},
+      {q:'每年6月2日是什麼日子？', o:['馬偕日','孔子誕辰','清法戰爭紀念日','鄭成功登陸日'], e:'西元2001年政府在淡水為馬偕豎立石像，並訂立馬偕日。'}
+    ]}
+  ]},
+
+  u3r: {missions:[
+    {id:'mix', type:'quiz', title:'單元大考驗', desc:'從第1、第2課隨機出15題，每次都不一樣。', from:['u3l1','u3l2'], count:15},
+    {id:'timeline', type:'order', title:'時光排序', desc:'把清帝國時期的大事依照時間排好。', prompt:'從最早發生的開始，依序點選', items:[
+      '臺灣納入清帝國版圖，限制人民渡臺',
+      '林爽文事件，清帝國派兵鎮壓',
+      '開放雞籠、淡水、安平、打狗通商',
+      '牡丹社事件，沈葆楨來臺',
+      '清法戰爭，劉銘傳來臺指揮',
+      '臺灣建省，劉銘傳任首任巡撫'
+    ], years:['西元1684年','西元1786年','西元1860年代','西元1874年','西元1884年','西元1885年']}
+  ]}
+,
+  u4l1: {missions:[
+    {id:'landform', type:'sort', title:'地形大分類', desc:'把地形特色、地名和利用方式分到正確的地形。', prompt:'這屬於哪一種地形？', cats:['山地','丘陵','台地','盆地','平原'], items:[
+      {t:'地勢高聳', c:0},
+      {t:'地勢低緩', c:1},
+      {t:'頂部平坦、地勢高起', c:2},
+      {t:'四周高、中間低平', c:3},
+      {t:'河川沖積而成，地勢平坦', c:4},
+      {t:'中央山脈', c:0},
+      {t:'宜蘭太平山', c:0},
+      {t:'竹東丘陵', c:1},
+      {t:'桃園台地', c:2},
+      {t:'林口台地', c:2},
+      {t:'臺北盆地', c:3},
+      {t:'埔里盆地', c:3},
+      {t:'屏東平原', c:4},
+      {t:'花東縱谷平原', c:4},
+      {t:'河川的發源地，有珍貴的林木資源', c:0},
+      {t:'在緩坡上發展階梯狀的茶園', c:1},
+      {t:'取水不易，挖掘埤塘儲存雨水', c:2},
+      {t:'早期淡水河有航運功能，沿河岸發展市街', c:3},
+      {t:'農業生產的精華區', c:4}
+    ]},
+    {id:'use', type:'match', title:'土地利用今昔', desc:'把地點配上它的發展變化。', pairs:[
+      ['太平山','早期是林場，現在轉型為國家森林遊樂區'],
+      ['北埔（竹東丘陵）','早期種茶樹，現在結合茶文化與觀光體驗'],
+      ['桃園埤塘','早期儲水灌溉，有些被填平，有些成為生態公園'],
+      ['臺北盆地','人口和汽機車增加，政府建造捷運改善交通'],
+      ['屏東平原','製糖業沒落後，改種蓮霧等熱帶水果'],
+      ['花東縱谷平原','中央山脈與海岸山脈之間的狹長平原']
+    ]},
+    {id:'quiz', type:'quiz', title:'地形問答', desc:'板塊、河川和各種地形利用的重點問題。', qs:[
+      {q:'臺灣島位在哪兩個板塊的交界處？', o:['菲律賓海板塊和歐亞板塊','太平洋板塊和印度板塊','非洲板塊和歐亞板塊','北美板塊和南美板塊'], e:'兩個板塊長期擠壓，讓臺灣島漸漸浮出海面。'},
+      {q:'臺灣島大約在多久以前浮出海面？', o:['約600萬年前','約600年前','約6萬年前','約6億年前'], e:'菲律賓海板塊和歐亞板塊長期擠壓，形成了陸地與山脈。'},
+      {q:'板塊至今仍持續推擠碰撞，帶來什麼影響？', o:['地震頻繁，山脈不斷隆起','每年冬天都下大雪','臺灣島越來越小','河川變得越來越長'], e:'中央山脈、海岸山脈等地區都在不斷隆起。'},
+      {q:'山脈不斷隆起，為什麼沒有明顯升高？', o:['侵蝕作用也很強烈','人們把山挖平了','山脈其實在下沉','板塊已經不動了'], e:'風、雨水、河水和海浪會不斷破壞地表。'},
+      {q:'什麼是侵蝕作用？', o:['風、雨水、河水和海浪對地表的破壞作用','火山噴發形成新的山','人類蓋房子改變地形','植物生長讓土地變肥沃'], e:'這是課本「小學堂」的說明。'},
+      {q:'中央山脈與海岸山脈之間的狹長平原叫什麼？', o:['花東縱谷平原','嘉南平原','屏東平原','宜蘭平原'], e:'海岸山脈每年都會向西移動，往中央山脈靠攏。'},
+      {q:'四周高、中間低平的地形是哪一種？', o:['盆地','台地','丘陵','平原'], e:'例如臺北盆地。'},
+      {q:'頂部平坦、地勢高起的地形是哪一種？', o:['台地','盆地','山地','平原'], e:'例如桃園台地。'},
+      {q:'臺灣的河川有什麼特色？', o:['坡度大、長度短，水資源不易蓄存','坡度小、長度長，很容易蓄水','大多發源於平原','全部都流向東邊'], e:'因為臺灣地形狹長，河川從山地很快就流到大海。'},
+      {q:'下列哪一條「不是」課本列出的臺灣主要河川？', o:['愛河','淡水河','濁水溪','高屏溪'], e:'淡水河、濁水溪與高屏溪是臺灣主要的河川。'},
+      {q:'臺灣的山地大多分布在哪裡？', o:['本島中央與東部','西部沿海','北部海邊','外島'], e:'許多山地是河川的發源地，也有珍貴的資源。'},
+      {q:'宜蘭太平山過去是什麼地方？', o:['重要的林木採伐場','茶園','糖廠','港口'], e:'現在已轉型為國家森林遊樂區。'},
+      {q:'政府在民國80年規定什麼，讓林業一度沒落？', o:['禁伐天然林木','禁止登山','禁止種茶','禁止捕魚'], e:'後來林場轉型，用永續經營的方式開發山地。'},
+      {q:'新竹北埔早期居民在竹東丘陵種植什麼？', o:['茶樹','甘蔗','稻米','蓮霧'], e:'竹東丘陵排水良好，居民發展出階梯形狀的茶園。'},
+      {q:'台地為什麼不利農業發展？', o:['地勢高起，取水不易','天氣太冷','土地太小','常常淹水'], e:'先民運用地形平坦的特性，興建灌溉設施發展農業。'},
+      {q:'桃園為什麼有「千塘之鄉」的美稱？', o:['埤塘數量曾經高達數千口','有一千間廟','有一千條河','有一千座橋'], e:'早期居民挖掘埤塘儲存雨水，作為灌溉用途。'},
+      {q:'早期淡水河流經臺北盆地，有什麼重要功能？', o:['航運','發電','製鹽','曬茶'], e:'人們沿著河岸開墾、交易商品並發展出市街。'},
+      {q:'政府建造捷運，想解決臺北盆地的什麼問題？', o:['交通壅塞與環境汙染','缺水','地層下陷','土石流'], e:'臺北盆地人口快速成長，汽機車數量也大幅增加。'},
+      {q:'屏東平原為什麼適合發展農業？', o:['地勢平坦、水源充足','地勢高聳','氣候寒冷','靠近林場'], e:'早期農民生產稻米和甘蔗。'},
+      {q:'屏東平原的製糖業沒落後，農民改種什麼？', o:['蓮霧等熱帶水果','茶樹','高麗菜','小麥'], e:'因為屏東氣候炎熱，適合種熱帶水果。'}
+    ]}
+  ]},
+
+  u4l2: {missions:[
+    {id:'coastmap', type:'map', map:'TWC', title:'海岸地形地圖', desc:'在臺灣地圖上找出四種海岸地形。'},
+    {id:'coast', type:'sort', title:'海岸大分類', desc:'這是哪一種海岸的特色？', prompt:'這是哪一種海岸？', cats:['西部沙岸','北部岩石海岸','東部斷層海岸','南部珊瑚礁海岸'], items:[
+      {t:'地形平緩，有沙灘、沙洲、潟湖', c:0},
+      {t:'利用海岸晒鹽、製鹽、養殖牡蠣', c:0},
+      {t:'臺南七股的沙洲和潟湖', c:0},
+      {t:'海岸線曲折，天然良港多', c:1},
+      {t:'有岬角和海灣，例如深澳漁港', c:1},
+      {t:'野柳地質公園的奇岩怪石', c:1},
+      {t:'基隆港', c:1},
+      {t:'懸崖峭壁，海岸線陡峭', c:2},
+      {t:'花蓮清水斷崖', c:2},
+      {t:'花蓮豐濱在抬升的階地開墾梯田', c:2},
+      {t:'海水溫暖乾淨，適合珊瑚生長', c:3},
+      {t:'設立國家公園保育生態，也發展觀光', c:3}
+    ]},
+    {id:'quiz', type:'quiz', title:'海岸問答', desc:'各地海岸的開發與利用。', qs:[
+      {q:'是什麼把臺灣分成東西兩邊？', o:['板塊運動造就中間隆起的高聳山地','一條很長的大河','一道古代城牆','地震把島裂開'], e:'西部地形較平緩，東部海岸較陡峭。'},
+      {q:'西部的沙灘、沙洲是怎麼形成的？', o:['河川在出海口的堆積作用','火山噴發','珊瑚生長','人工填海'], e:'西部平緩的沙岸主要由泥沙或礫石堆積而成。'},
+      {q:'早期移民怎麼利用西部海岸？', o:['製鹽、養殖牡蠣','開墾梯田','潛水觀光','建造砲臺'], e:'早期移民也以小型船舶在這裡停靠登陸。'},
+      {q:'臺南北門潟湖的牡蠣為什麼長得好？', o:['鹹水與淡水交互作用','海水非常冷','附近有珊瑚','沒有陽光照射'], e:'這樣的環境讓蚵架上的牡蠣品質更佳。'},
+      {q:'海岸的尖端叫什麼？凹進去的地方叫什麼？', o:['岬角、海灣','海灣、岬角','沙洲、潟湖','斷崖、梯田'], e:'海灣可以躲避風雨，利於發展成港口。'},
+      {q:'為什麼北部適合發展港口？', o:['海岸線曲折，天然良港多','海岸線很平直','那裡從來不颳風','有很多沙洲'], e:'方便移民登陸，也有利漁業及海運發展。'},
+      {q:'臺灣東部為什麼較晚開發？', o:['海岸陡峭難登陸，山脈也阻隔了和西部的交流','天氣太冷','沒有河川','被法國人占領'], e:'也因此保留了許多自然生態與環境。'},
+      {q:'南部為什麼形成珊瑚礁海岸？', o:['屬熱帶氣候，海水溫暖乾淨','海水很冷','河川堆積很多泥沙','有火山'], e:'獨特的景觀吸引許多人前來觀光。'},
+      {q:'花蓮豐濱鄉的居民在哪裡開墾梯田？', o:['沿岸被抬升的階地','沙洲上','潟湖裡','珊瑚礁上'], e:'居民在這裡以友善農作種出「海稻米」。'},
+      {q:'野柳地質公園在哪裡？', o:['新北市萬里區','臺南市七股區','花蓮縣豐濱鄉','屏東縣'], e:'多元的地質景觀豐富了當地的觀光資源。'},
+      {q:'清水斷崖在哪裡？', o:['花蓮縣','臺南市','新北市','屏東縣'], e:'可以看出東部陡峭的海岸線。'},
+      {q:'高雄港在附件地圖上屬於哪一種海岸地形？', o:['沙岸','岩石海岸','斷層海岸','珊瑚礁海岸'], e:'課本問：高雄港位在沙岸，為什麼一直是臺灣百年來第一大港？可以和家人討論看看。'}
+    ]}
+  ]},
+
+  u4l3: {missions:[
+    {id:'problem', type:'match', title:'問題與對策', desc:'把土地與環境問題配上原因或做法。', pairs:[
+      ['不當開發山坡地','水土流失，容易引發山崩和土石流'],
+      ['超抽地下水','造成地層下陷'],
+      ['改種高粱','用水量較少，可減緩地層下陷'],
+      ['設置自然保留區','減緩溼地陸化，維持自然生態'],
+      ['工廠廢水、過度噴灑農藥','汙染環境、水源、農作物與生態'],
+      ['淨灘、減塑','民眾自發守護海岸資源']
+    ]},
+    {id:'aihe', type:'order', title:'愛河變身記', desc:'把高雄愛河的變化依照時間排好。', prompt:'從最早發生的開始，依序點選', items:[
+      '日本人拓寬愛河，裝設路燈、設置公園',
+      '工廠林立，廢水排入愛河造成汙染',
+      '政府興建汙水下水道，打造親水環境',
+      '愛河再度成為高雄的熱門景點'
+    ]},
+    {id:'quiz', type:'quiz', title:'環境保護問答', desc:'土地開發與環境保護的重點問題。', qs:[
+      {q:'早期原住民族怎麼和環境共生？', o:['學習祖先傳下來的山林知識，農耕和狩獵都與環境共生','大量砍伐森林','把河川填平','只住在海邊'], e:'近年來人們不當開發山坡地，才造成水土流失。'},
+      {q:'不當開發山坡地，會造成什麼問題？', o:['水土流失','地層下陷','珊瑚死亡','河川變長'], e:'若遇上強降雨或地震，更容易引發山崩和土石流。'},
+      {q:'南投廬山溫泉區後來怎麼了？', o:['被颱風重創，業者被輔導遷到埔里重建','變成國家公園','改建成捷運站','變成漁港'], e:'調查發現廬山仍有地層滑動，所以縣政府規劃了永續發展計畫。'},
+      {q:'臺灣西南沿海為什麼會地層下陷？', o:['養殖漁業超抽地下水','地震太多','雨下太多','珊瑚太多'], e:'政府鼓勵民眾改種用水量較少的作物。'},
+      {q:'政府鼓勵西南沿海民眾改種什麼，來減緩地層下陷？', o:['用水量較少的高粱','稻米','蓮霧','茶樹'], e:'改種高粱還能獲得補助。'},
+      {q:'開發土地為什麼可能產生問題？', o:['過度重視經濟利益或缺乏整體規劃','人們太愛護環境','法律太多','土地太大'], e:'所以要採取對環境影響較低的方式，讓土地永續發展。'},
+      {q:'愛河在哪個城市？', o:['高雄','臺北','臺南','基隆'], e:'經過整治後，愛河成為高雄的熱門景點之一。'},
+      {q:'愛河為什麼曾經被汙染？', o:['汙水道還沒普及，工廠和家庭廢水排入','遊客太多','颱風帶來泥沙','漁船太多'], e:'政府投入經費興建汙水下水道工程。'},
+      {q:'臺灣海岸面臨哪些挑戰？', o:['廢棄物汙染、海岸人工化、過度開發','海岸線太長','珊瑚太多','魚太多'], e:'這些都可能對沿海生態造成難以復原的破壞。'},
+      {q:'世界海洋日是每年的哪一天？', o:['6月8日','6月2日','4月22日','9月28日'], e:'聯合國自西元2009年起訂定。6月2日是馬偕日喔！'},
+      {q:'我們可以怎麼保護海岸資源？', o:['參與淨灘、落實減塑','多用塑膠袋','把垃圾丟進海裡','在海邊到處蓋水泥堤防'], e:'也要配合政府推動海岸整體管理與永續規劃。'}
+    ]}
+  ]},
+
+  u4x: {missions:[
+    {id:'arch', type:'quiz', title:'風土建築小知識', desc:'延伸學習，不用背，看看你記得多少。', qs:[
+      {q:'澎湖花宅聚落在哪一座島上？', o:['望安島','蘭嶼','綠島','龜山島'], e:'漢人在300多年前移民到這裡，選擇面海、背靠小山丘的地點建立聚落。'},
+      {q:'花宅的房子用哪些在地材料建造？', o:['珊瑚礁岩、玄武岩','鋼筋水泥','竹子','玻璃'], e:'這是因應環境、就地取材的風土建築。'},
+      {q:'花宅居民用石牆圍成「菜宅」，是為了什麼？', o:['替農作物擋風','養雞','關牛','當作運動場'], e:'澎湖風很大，石牆可以保護作物。'},
+      {q:'魯凱族石板屋為什麼被稱為「會呼吸的房子」？', o:['石板堆疊不用黏著物，有縫隙，夏天能通風隔熱','房子會自己移動','屋裡種了很多植物','裝了很多電風扇'], e:'冬天在屋內生火也能保暖。'},
+      {q:'石板屋的出口為什麼比族人的身高還低？', o:['敵人進入時必須彎腰，可以增加防守時間','為了節省石板','防止動物跑進來','方便小孩進出'], e:'這也顯示出人地互動的良好狀況。'}
+    ]}
+  ]},
+
+  u4r: {missions:[
+    {id:'mix', type:'quiz', title:'單元大考驗', desc:'從第1到第3課隨機出15題，每次都不一樣。', from:['u4l1','u4l2','u4l3'], count:15}
+  ]},
+
+  final: {missions:[
+    {id:'mix', type:'quiz', title:'全冊大挑戰', desc:'從整本書隨機出20題。', from:['u1l1','u1l2','u1l3','u2l1','u2l2','u3l1','u3l2','u4l1','u4l2','u4l3'], count:20},
+    {id:'farm', type:'order', title:'臺灣農業發展年表', desc:'依照課本第96、97頁的年表，把農業發展排好。', prompt:'從最早發生的開始，依序點選', items:[
+      '長濱遺址的人靠採集、狩獵和捕魚維生',
+      '卑南遺址的人用石器收割作物',
+      '十三行遺址的人用鐵製鋤頭、鐮刀耕種收割',
+      '荷蘭人引進黃牛，招募漢人開墾西南部',
+      '鄭成功讓駐屯的軍隊就地耕種',
+      '施世榜興建八堡圳、郭錫瑠興建瑠公圳',
+      '曹謹興建曹公圳，帶動鳳山地區開發'
+    ], years:['距今約5萬～5千年前','距今約3,500～2,000年前','距今約2,000～400年前','17世紀','17世紀','18世紀','19世紀']},
+    {id:'canal', type:'match', title:'開墾人物', desc:'清帝國時期開發土地的重要人物。', pairs:[
+      ['施世榜','興建八堡圳，開發彰化平原'],
+      ['郭錫瑠','興建瑠公圳，加速臺北盆地開發'],
+      ['曹謹','興建曹公圳，帶動鳳山地區開發'],
+      ['吳沙','招募漢人移民到宜蘭開墾']
+    ]}
+  ]}
+};
+
+const LMETA = {};
+UNITS.forEach(u => u.l.forEach(l => { if(l.id) LMETA[l.id] = {...l, unit:u}; }));
+
+/* ================= 畫面切換 ================= */
+let screen = 'units', curLesson = null, curMission = null;
+function show(id){
+  document.querySelectorAll('.screen').forEach(s => s.hidden = s.id !== id);
+  screen = id; window.scrollTo(0,0);
+  if(id === 'units') renderUnits();
+  if(id === 'lesson') renderLesson();
+}
+function backToLesson(){ show(curLesson ? 'lesson' : 'units'); }
+function lessonStars(lid){
+  const s = readJSON(SKEY), ms = LESSONS[lid].missions;
+  return {got: ms.reduce((a,m) => a + (s[lid+':'+m.id]||0), 0), total: ms.length*3};
+}
+function renderUnits(){
+  const wcount = Object.keys(readJSON(WKEY)).length;
+  $('wbBar').innerHTML = '';
+  if(wcount){
+    const b = document.createElement('button');
+    b.className = 'btn warn'; b.textContent = `錯題本練習（${wcount} 題）`;
+    b.onclick = () => { curLesson = null; startMission({id:'wb', wb:true, type:'quiz', title:'錯題本'}); };
+    $('wbBar').appendChild(b);
+  }
+  const box = $('unitList'); box.innerHTML = '';
+  UNITS.forEach(u => {
+    const d = document.createElement('div');
+    d.className = 'unit';
+    d.innerHTML = `<span class="big" style="color:${u.c}">${u.n}</span><div><h2>${u.t}</h2><div class="lessons"></div></div>`;
+    u.l.forEach(ls => {
+      const b = document.createElement('button');
+      b.className = 'lesson';
+      if(ls.id && LESSONS[ls.id]){
+        const st = lessonStars(ls.id);
+        b.innerHTML = `<span>${ls.t}</span><span class="meta go">★ ${st.got} / ${st.total}</span>`;
+        b.onclick = () => { curLesson = ls.id; show('lesson'); };
+      } else {
+        b.innerHTML = `<span>${ls.t}</span><span class="meta">${ls.p ? '第 '+ls.p+' 頁　' : ''}準備中</span>`;
+        b.disabled = true;
+      }
+      d.querySelector('.lessons').appendChild(b);
+    });
+    box.appendChild(d);
+  });
+}
+function renderLesson(){
+  const meta = LMETA[curLesson], s = readJSON(SKEY);
+  $('lessonTitle').innerHTML = typeof meta.unit.n === 'number' ? `第${'一二三四五'[meta.unit.n-1]}單元　${meta.unit.t}<br>${meta.t}` : `${meta.unit.t}<br>${meta.t}`;
+  $('missionList').innerHTML = '';
+  LESSONS[curLesson].missions.forEach((m,i) => {
+    const n = s[curLesson+':'+m.id] || 0;
+    const b = document.createElement('button');
+    b.className = 'mission';
+    b.innerHTML = `<span class="num">${i+1}</span><span><h2>${m.title}</h2><p>${m.desc}</p></span><span class="stars" aria-label="${n} 顆星">${starHTML(n)}</span>`;
+    b.onclick = () => startMission(m);
+    $('missionList').appendChild(b);
+  });
+}
+function startMission(m){
+  curMission = m;
+  if(m.type === 'map') startMap(m.map === 'TW' ? TW : m.map === 'TWC' ? TWC : WORLD);
+  else if(m.type === 'quiz') startQuiz(m);
+  else if(m.type === 'match') startMatch(m);
+  else if(m.type === 'sort') startSort(m);
+  else if(m.type === 'order') startOrder(m);
+}
+function finish(stars, title, text, reviewHTML){
+  if(!curMission.wb && curLesson) saveStar(curLesson+':'+curMission.id, stars);
+  $('resStars').innerHTML = starHTML(stars);
+  $('resTitle').textContent = title;
+  $('resText').textContent = text;
+  $('resReview').innerHTML = reviewHTML || '';
+  const m = curMission;
+  $('resAgain').hidden = !!(m.wb && !Object.keys(readJSON(WKEY)).length);
+  $('resAgain').onclick = () => startMission(m);
+  show('result');
+}
+
+/* ================= 地圖引擎 ================= */
+let mt = null;
+function startMap(cfg){
+  const svg = $(cfg.svg);
+  mt = {cfg, svg, list:shuffle(cfg.tasks), i:0, score:0, tries:0, lock:false};
+  svg.querySelector('.labels').innerHTML = '';
+  svg.classList.toggle('coastmode', !!cfg.coast);
+  svg.querySelectorAll('.hint, .found').forEach(e => e.classList.remove('hint','found'));
+  $('box-world').hidden = cfg.svg !== 'world';
+  $('box-twmap').hidden = cfg.svg !== 'twmap';
+  show('mapScreen'); nextMapTask();
+}
+function nextMapTask(){
+  mt.svg.querySelectorAll('.hint').forEach(e => e.classList.remove('hint'));
+  if(mt.i >= mt.list.length){
+    return finish(ratioStars(mt.score/mt.list.length), curMission.title + '完成！', `第一次就點對 ${mt.score} 題，共 ${mt.list.length} 題。`);
+  }
+  const t = mt.list[mt.i];
+  mt.tries = 0; mt.lock = false;
+  $('mapPrompt').innerHTML = `請在地圖上點出：<b>${mt.cfg.names[t.id]}</b>`;
+  $('mapProgress').textContent = `第 ${mt.i+1} / ${mt.list.length} 題`;
+  setFb('mapFeedback','','');
+}
+function addLabel(id){
+  const c = mt.cfg, isSea = c.sea.includes(id), isLine = c.lines.includes(id);
+  (c.labels[id]||[]).forEach(([x,y]) => {
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',x); t.setAttribute('y',y);
+    t.setAttribute('text-anchor', isLine ? 'start' : 'middle');
+    t.setAttribute('class','maplabel' + (isSea ? ' sea' : ''));
+    t.textContent = c.names[id];
+    mt.svg.querySelector('.labels').appendChild(t);
+  });
+  mt.svg.querySelectorAll(`[data-hint="${id}"]`).forEach(e => e.classList.add('found'));
+}
+function mapClick(e){
+  if(screen !== 'mapScreen' || !mt || mt.lock || e.currentTarget !== mt.svg) return;
+  const t = mt.list[mt.i];
+  const el = e.target.closest('[data-id]');
+  if(!el){ setFb('mapFeedback', mt.cfg.miss, 'bad'); return; }
+  const id = el.dataset.id;
+  if(id === t.id){
+    if(mt.tries === 0) mt.score++;
+    addLabel(id); mt.lock = true;
+    setFb('mapFeedback', '答對了！' + t.tip, 'ok');
+    setTimeout(() => { mt.i++; nextMapTask(); }, 1800);
+  } else {
+    mt.tries++;
+    let msg = `這裡是「${mt.cfg.names[id]}」，不是「${mt.cfg.names[t.id]}」。`;
+    if(mt.tries >= 2){
+      msg += '看看閃爍的地方。';
+      mt.svg.querySelectorAll(`[data-id="${t.id}"], [data-hint="${t.id}"]`).forEach(x => x.classList.add('hint'));
+    }
+    setFb('mapFeedback', msg, 'bad');
+  }
+}
+$('world').addEventListener('click', mapClick);
+$('twmap').addEventListener('click', mapClick);
+
+/* ================= 問答引擎 ================= */
+let qz = null;
+function startQuiz(m){
+  let qs;
+  if(m.wb) qs = Object.values(readJSON(WKEY));
+  else if(m.from) qs = shuffle(m.from.flatMap(lid => LESSONS[lid].missions.filter(x => x.type === 'quiz').flatMap(x => x.qs))).slice(0, m.count);
+  else qs = m.qs;
+  if(!qs.length) return finish(3, '錯題本清空了！', '目前沒有錯題，繼續保持。');
+  qz = {list:shuffle(qs).map(q => ({...q, order:shuffle(q.o.map((_,i) => i))})), i:0, score:0, wrong:[], answered:false, wb:!!m.wb};
+  show('quiz'); renderQ();
+}
+function renderQ(){
+  if(qz.i >= qz.list.length){
+    let rev = '';
+    if(qz.wrong.length) rev = '<h3>錯題回顧</h3><ul>' + qz.wrong.map(q => `<li>${q.q}<br><span class="ans">答案：${q.o[0]}</span>。${q.e}</li>`).join('') + '</ul>';
+    const left = Object.keys(readJSON(WKEY)).length;
+    const text = `答對 ${qz.score} 題，共 ${qz.list.length} 題。` + (qz.wb ? (left ? `錯題本還剩 ${left} 題。` : '錯題本已經清空了！') : '');
+    return finish(ratioStars(qz.score/qz.list.length), curMission.title + '完成！', text, rev);
+  }
+  const q = qz.list[qz.i];
+  qz.answered = false;
+  $('quizProgress').textContent = `第 ${qz.i+1} / ${qz.list.length} 題`;
+  $('quizQ').textContent = q.q;
+  $('quizOpts').innerHTML = '';
+  q.order.forEach((oi, k) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = `<span class="k">${k+1}</span><span>${q.o[oi]}</span>`;
+    b.onclick = () => answer(k);
+    $('quizOpts').appendChild(b);
+  });
+  setFb('quizExp','','');
+  $('quizNext').hidden = true;
+}
+function answer(k){
+  if(qz.answered) return;
+  qz.answered = true;
+  const q = qz.list[qz.i], btns = $('quizOpts').children, right = q.order.indexOf(0);
+  [...btns].forEach(b => b.disabled = true);
+  btns[right].classList.add('ok');
+  const w = readJSON(WKEY);
+  if(k === right){
+    qz.score++; setFb('quizExp','答對了！' + q.e, 'ok');
+    if(qz.wb){ delete w[q.q]; writeJSON(WKEY, w); }
+  } else {
+    btns[k].classList.add('bad'); qz.wrong.push(q);
+    setFb('quizExp', '答錯了。正確答案是「' + q.o[0] + '」。' + q.e, 'bad');
+    w[q.q] = {q:q.q, o:q.o, e:q.e}; writeJSON(WKEY, w);
+  }
+  $('quizNext').hidden = false; $('quizNext').focus();
+}
+$('quizNext').onclick = () => { qz.i++; renderQ(); };
+
+/* ================= 配對引擎 ================= */
+let mm = null;
+function startMatch(m){
+  mm = {m, sel:null, done:0, miss:0};
+  $('matchLeft').innerHTML = ''; $('matchRight').innerHTML = '';
+  shuffle(m.pairs.map((p,i) => i)).forEach(i => {
+    const b = document.createElement('button');
+    b.className = 'tile'; b.textContent = m.pairs[i][0]; b.dataset.k = i;
+    b.onclick = () => { document.querySelectorAll('#matchLeft .tile').forEach(t => t.classList.remove('sel')); b.classList.add('sel'); mm.sel = b; setFb('matchFeedback','',''); };
+    $('matchLeft').appendChild(b);
+  });
+  shuffle(m.pairs.map((p,i) => i)).forEach(i => {
+    const b = document.createElement('button');
+    b.className = 'tile'; b.textContent = m.pairs[i][1]; b.dataset.k = i;
+    b.onclick = () => pickRight(b);
+    $('matchRight').appendChild(b);
+  });
+  $('matchProgress').textContent = `已配對 0 / ${m.pairs.length}`;
+  setFb('matchFeedback','','');
+  show('match');
+}
+function pickRight(b){
+  if(!mm.sel){ setFb('matchFeedback','先點左邊的項目。','bad'); return; }
+  const total = mm.m.pairs.length;
+  if(mm.sel.dataset.k === b.dataset.k){
+    [mm.sel, b].forEach(t => { t.classList.remove('sel'); t.classList.add('ok'); t.disabled = true; });
+    mm.sel = null; mm.done++;
+    $('matchProgress').textContent = `已配對 ${mm.done} / ${total}`;
+    setFb('matchFeedback','配對成功！','ok');
+    if(mm.done === total){
+      const s = mm.miss <= 1 ? 3 : mm.miss <= 3 ? 2 : 1;
+      setTimeout(() => finish(s, curMission.title + '完成！', `全部配對成功，配錯 ${mm.miss} 次。`), 700);
+    }
+  } else {
+    mm.miss++;
+    b.classList.add('bad'); setTimeout(() => b.classList.remove('bad'), 600);
+    setFb('matchFeedback', `「${mm.sel.textContent}」不是這個意思，再試試看。`, 'bad');
+  }
+}
+
+/* ================= 分類引擎 ================= */
+let st = null;
+function startSort(m){
+  st = {m, list:shuffle(m.items), i:0, first:0, tried:false, lock:false};
+  $('sortPrompt').textContent = m.prompt;
+  $('sortCats').innerHTML = '';
+  m.cats.forEach((c,k) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = `<span class="k">${k+1}</span><span>${c}</span>`;
+    b.onclick = () => pickCat(k);
+    $('sortCats').appendChild(b);
+  });
+  show('sort'); nextSort();
+}
+function nextSort(){
+  if(st.i >= st.list.length){
+    return finish(ratioStars(st.first/st.list.length), curMission.title + '完成！', `第一次就分對 ${st.first} 個，共 ${st.list.length} 個。`);
+  }
+  st.tried = false; st.lock = false;
+  $('sortItem').textContent = st.list[st.i].t;
+  $('sortProgress').textContent = `第 ${st.i+1} / ${st.list.length} 個`;
+  [...$('sortCats').children].forEach(b => b.classList.remove('ok','bad'));
+  setFb('sortFb','','');
+}
+function pickCat(k){
+  if(st.lock) return;
+  const it = st.list[st.i], btn = $('sortCats').children[k];
+  if(k === it.c){
+    if(!st.tried) st.first++;
+    st.lock = true; btn.classList.add('ok');
+    setFb('sortFb', `答對了！這是「${st.m.cats[it.c]}」。`, 'ok');
+    setTimeout(() => { st.i++; nextSort(); }, 1100);
+  } else {
+    st.tried = true; btn.classList.add('bad');
+    setFb('sortFb', `不是「${st.m.cats[k]}」，再想想看。`, 'bad');
+  }
+}
+
+/* ================= 排序引擎 ================= */
+let od = null;
+function startOrder(m){
+  od = {m, next:0, miss:0};
+  $('orderPrompt').textContent = m.prompt;
+  $('orderPlaced').innerHTML = ''; $('orderPool').innerHTML = '';
+  shuffle(m.items.map((t,i) => i)).forEach(i => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.innerHTML = `<span>${m.items[i]}</span>`;
+    b.onclick = () => pickOrder(b, i);
+    $('orderPool').appendChild(b);
+  });
+  $('orderProgress').textContent = `已排好 0 / ${m.items.length}`;
+  setFb('orderFb','','');
+  show('order');
+}
+function pickOrder(b, i){
+  const total = od.m.items.length;
+  if(i === od.next){
+    b.remove();
+    const li = document.createElement('li'); li.textContent = od.m.items[i];
+    $('orderPlaced').appendChild(li);
+    od.next++;
+    $('orderProgress').textContent = `已排好 ${od.next} / ${total}`;
+    setFb('orderFb','排對了！','ok');
+    if(od.next === total){
+      const s = od.miss === 0 ? 3 : od.miss <= 2 ? 2 : 1;
+      setTimeout(() => finish(s, curMission.title + '完成！', `全部排好了，排錯 ${od.miss} 次。`, od.m.years ? '<h3>正確順序</h3><ol>' + od.m.items.map((t,i) => `<li>${od.m.years[i]}：${t}</li>`).join('') + '</ol>' : ''), 700);
+    }
+  } else {
+    od.miss++;
+    b.classList.add('bad'); setTimeout(() => b.classList.remove('bad'), 600);
+    setFb('orderFb','還有更早發生的事，再想想看。','bad');
+  }
+}
+
+/* ================= 鍵盤 ================= */
+document.addEventListener('keydown', e => {
+  if(screen === 'quiz' && qz){
+    const n = parseInt(e.key, 10);
+    if(n >= 1 && n <= 4 && !qz.answered) answer(n-1);
+    else if(e.key === 'Enter' && qz.answered){ e.preventDefault(); qz.i++; renderQ(); }
+  } else if(screen === 'sort' && st){
+    const n = parseInt(e.key, 10);
+    if(n >= 1 && n <= st.m.cats.length) pickCat(n-1);
+  }
+});
+
+show('units');
+</script>
+</body>
+</html>
