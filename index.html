@@ -384,6 +384,8 @@ function writeJSON(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } ca
 function saveStar(key, v){ const s = readJSON(SKEY); if(!s[key] || v > s[key]) s[key] = v; writeJSON(SKEY, s); }
 function starHTML(n){ let h=''; for(let i=1;i<=3;i++) h += i<=n ? '★' : '<span class="off">★</span>'; return h; }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function addWrong(q){ const w = readJSON(WKEY); w[q.q] = {q:q.q, o:q.o, e:q.e}; writeJSON(WKEY, w); }
+function others(pool, correct, n){ return shuffle([...new Set(pool)].filter(x => x !== correct)).slice(0, n); }
 function ratioStars(r){ return r >= 0.9 ? 3 : r >= 0.7 ? 2 : 1; }
 function setFb(id, msg, cls){ const f=$(id); f.textContent = msg; f.className = 'feedback' + (cls ? ' '+cls : '') + (id==='quizExp' ? ' explain' : ''); }
 
@@ -1083,7 +1085,7 @@ function renderUnits(){
   $('wbBar').appendChild(b);
   const tip = document.createElement('p');
   tip.className = 'keyhint';
-  tip.textContent = '問答關卡答錯的題目會自動收進錯題本，答對就會移出。';
+  tip.textContent = '問答、地圖、配對、分類關卡答錯的題目，都會自動收進錯題本，答對就會移出。';
   $('wbBar').appendChild(tip);
   const box = $('unitList'); box.innerHTML = '';
   UNITS.forEach(u => {
@@ -1187,6 +1189,11 @@ function mapClick(e){
     setTimeout(() => { mt.i++; nextMapTask(); }, 1800);
   } else {
     mt.tries++;
+    if(mt.tries === 1){
+      const name = mt.cfg.names[t.id];
+      const qtext = t.tip.includes(name) ? `地圖題：「${t.tip.split(name).join('（　）')}」括號裡應該填什麼？` : `地圖題：「${t.tip}」這是在說哪裡？`;
+      addWrong({q:qtext, o:[name, ...others(mt.cfg.tasks.map(x => mt.cfg.names[x.id]), name, 3)], e:`答案是「${name}」，記得它在地圖上的位置喔！`});
+    }
     let msg = `這裡是「${mt.cfg.names[id]}」，不是「${mt.cfg.names[t.id]}」。`;
     if(mt.tries >= 2){
       msg += '看看閃爍的地方。';
@@ -1245,7 +1252,7 @@ function answer(k){
   } else {
     btns[k].classList.add('bad'); qz.wrong.push(q);
     setFb('quizExp', '答錯了。正確答案是「' + q.o[0] + '」。' + q.e, 'bad');
-    w[q.q] = {q:q.q, o:q.o, e:q.e}; writeJSON(WKEY, w);
+    addWrong(q);
   }
   $('quizNext').hidden = false; $('quizNext').focus();
 }
@@ -1286,6 +1293,8 @@ function pickRight(b){
     }
   } else {
     mm.miss++;
+    const pair = mm.m.pairs[+mm.sel.dataset.k];
+    addWrong({q:`「${pair[0]}」的正確說明是哪一個？`, o:[pair[1], ...others(mm.m.pairs.map(x => x[1]), pair[1], 3)], e:`「${pair[0]}」：${pair[1]}。`});
     b.classList.add('bad'); setTimeout(() => b.classList.remove('bad'), 600);
     setFb('matchFeedback', `「${mm.sel.textContent}」不是這個意思，再試試看。`, 'bad');
   }
@@ -1325,6 +1334,10 @@ function pickCat(k){
     setFb('sortFb', `答對了！這是「${st.m.cats[it.c]}」。`, 'ok');
     setTimeout(() => { st.i++; nextSort(); }, 1100);
   } else {
+    if(!st.tried){
+      const cat = st.m.cats[it.c];
+      addWrong({q:`${st.m.prompt}「${it.t}」`, o:[cat, ...others(st.m.cats, cat, 3)], e:`答案是「${cat}」。`});
+    }
     st.tried = true; btn.classList.add('bad');
     setFb('sortFb', `不是「${st.m.cats[k]}」，再想想看。`, 'bad');
   }
@@ -1370,7 +1383,7 @@ function pickOrder(b, i){
 document.addEventListener('keydown', e => {
   if(screen === 'quiz' && qz){
     const n = parseInt(e.key, 10);
-    if(n >= 1 && n <= 4 && !qz.answered) answer(n-1);
+    if(n >= 1 && n <= qz.list[qz.i].o.length && !qz.answered) answer(n-1);
     else if(e.key === 'Enter' && qz.answered){ e.preventDefault(); qz.i++; renderQ(); }
   } else if(screen === 'sort' && st){
     const n = parseInt(e.key, 10);
