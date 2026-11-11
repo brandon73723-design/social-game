@@ -70,6 +70,8 @@ header h1{text-shadow:0 2px 0 rgba(0,0,0,.12)}
 .mapbox{overflow-x:auto;border-radius:18px;border:3px solid var(--sea-deep);background:var(--sea)}
 .mapbox svg{display:block;width:100%;min-width:720px;height:auto}
 .mapbox.tw svg{min-width:0;max-width:620px;margin:0 auto}
+.swipe-hint{display:none;margin:-6px 0 10px}
+@media (max-width:720px){.swipe-hint.show{display:block}}
 .land{stroke:#ffffff;stroke-width:1.5;cursor:pointer}
 .land:hover{filter:brightness(1.08)}
 .isle-hit{fill:transparent;stroke:none}
@@ -180,6 +182,7 @@ footer{color:var(--muted);font-size:14px;padding:0 0 30px}
       <span class="progress" id="mapProgress"></span>
     </div>
     <p class="prompt" id="mapPrompt"></p>
+    <p class="keyhint swipe-hint" id="swipeHint">世界地圖比較寬，可以用手指左右滑動，看到美洲和大西洋。</p>
 
     <div class="mapbox" id="box-world">
       <svg id="world" viewBox="0 0 1000 500" role="img" aria-label="世界地圖">
@@ -1151,6 +1154,7 @@ function startMap(cfg){
   svg.querySelectorAll('.hint, .found').forEach(e => e.classList.remove('hint','found'));
   $('box-world').hidden = cfg.svg !== 'world';
   $('box-twmap').hidden = cfg.svg !== 'twmap';
+  $('swipeHint').classList.toggle('show', cfg.svg === 'world');
   show('mapScreen'); nextMapTask();
 }
 function nextMapTask(){
