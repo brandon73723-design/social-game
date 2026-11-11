@@ -146,11 +146,57 @@ header h1{text-shadow:0 2px 0 rgba(0,0,0,.12)}
 .lesson .meta{color:var(--muted);font-size:15px;white-space:nowrap}
 .lesson .meta.go{color:var(--gold);font-size:18px}
 .wbbar{margin-bottom:18px}
+.level{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:16px 20px;margin-bottom:14px;font-weight:700}
+.level b{font-size:24px;font-weight:900;color:var(--sea-deep)}
+.xpbar{height:14px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:8px}
+.xpfill{height:100%;background:var(--gold);border-radius:999px}
+.topbtns{display:flex;gap:12px;flex-wrap:wrap}
+.hud{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-weight:900;font-size:20px}
+.hearts{color:var(--bad);font-size:30px;letter-spacing:4px;line-height:1}
+.hearts .lost{color:var(--line)}
+.combo{color:#fff;background:var(--sea-deep);border-radius:999px;padding:4px 16px}
+.combo:empty{display:none}
+.score{margin-left:auto;color:var(--muted)}
+.hud.hurt{animation:shake .4s}
+.boss{display:grid;grid-template-columns:1fr 150px;gap:16px;align-items:center;background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:12px 20px;margin-bottom:12px}
+.bossname{font-size:22px;font-weight:900}
+.hpbar{height:20px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:8px}
+.hpfill{height:100%;background:var(--bad);border-radius:999px;transition:width .4s}
+.hptext{color:var(--muted);font-size:15px;margin-top:4px;font-weight:700}
+.monster{width:150px;height:auto;display:block;transition:opacity .5s, transform .5s}
+.bossart.hit{animation:shake .4s}
+.bossart.dead .monster{opacity:.25;transform:rotate(14deg)}
+@keyframes shake{20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.tfans{display:block;margin-top:12px;color:var(--sea)}
+.memgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.mem{min-height:112px;border-radius:14px;border:3px solid transparent;background:var(--sea);color:#fff;font-size:17px;font-weight:700;padding:10px;display:grid;place-items:center;text-align:center;line-height:1.45}
+.mem.b{background:var(--sea-deep)}
+.mem .back{font-size:22px;font-weight:900}
+.mem .face{display:none}
+.mem.open .face,.mem.done .face{display:block}
+.mem.open .back,.mem.done .back{display:none}
+.mem.open{background:var(--chip);color:var(--ink);border-color:var(--gold)}
+.mem.done{background:var(--okbg);color:var(--ok);border-color:var(--ok);cursor:default}
+.album{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.tcard{background:var(--panel);border:3px solid var(--line);border-radius:16px;padding:14px;text-align:center;min-height:200px}
+.tcard .art{font-size:54px;line-height:1.25}
+.tcard h3{margin:4px 0;font-size:19px;font-weight:900}
+.tcard p{margin:6px 0 0;font-size:14px;color:var(--muted);line-height:1.55}
+.tcard .tag{display:inline-block;background:var(--gold);color:#3A2600;border-radius:999px;padding:0 10px;font-size:13px;font-weight:900}
+.tcard.shiny{border-color:var(--gold);background:linear-gradient(135deg,#FFF3C4,#FFFFFF 50%,#FFE08A);color:#2B2D42}
+.tcard.shiny p{color:#5A5E78}
+.tcard.locked{opacity:.6}
+.result .tcard{max-width:240px;margin:0 auto}
+.got{font-weight:900;font-size:20px;color:var(--sea-deep);margin:14px 0 8px}
+.lvup{font-weight:900;font-size:22px;color:var(--ok);margin:8px 0 0}
+.lvup:empty{display:none}
 footer{color:var(--muted);font-size:14px;padding:0 0 30px}
 @media (max-width:640px){
   .options{grid-template-columns:1fr} header h1{font-size:34px} .prompt{font-size:24px}
   .unit{grid-template-columns:1fr;gap:4px}.unit .big{font-size:44px}
   .match{grid-template-columns:1fr 1.3fr;gap:10px} .sortItem{font-size:24px}
+  .memgrid{grid-template-columns:repeat(3,1fr);gap:8px} .mem{min-height:96px;font-size:15px;padding:6px}
+  .boss{grid-template-columns:1fr 96px} .monster{width:96px}
 }
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -304,12 +350,25 @@ footer{color:var(--muted);font-size:14px;padding:0 0 30px}
       <button class="btn ghost" onclick="backToLesson()">回課程選單</button>
       <span class="progress" id="quizProgress"></span>
     </div>
+    <div class="hud" id="hud">
+      <span class="hearts" id="hudHearts" aria-label="愛心"></span>
+      <span class="combo" id="hudCombo"></span>
+      <span class="score" id="hudScore"></span>
+    </div>
+    <div class="boss" id="bossBox" hidden>
+      <div>
+        <div class="bossname" id="bossName"></div>
+        <div class="hpbar"><div class="hpfill" id="bossHp"></div></div>
+        <div class="hptext" id="bossHpText"></div>
+      </div>
+      <div class="bossart" id="bossArt"></div>
+    </div>
     <div class="card">
       <p class="question" id="quizQ"></p>
       <div class="options" id="quizOpts"></div>
       <div class="feedback explain" id="quizExp" role="status"></div>
       <div class="actions"><button class="btn" id="quizNext" hidden>下一題</button></div>
-      <p class="keyhint">可以按鍵盤 1 到 4 作答，按 Enter 到下一題。</p>
+      <p class="keyhint" id="quizKeys"></p>
     </div>
   </section>
 
@@ -353,11 +412,33 @@ footer{color:var(--muted);font-size:14px;padding:0 0 30px}
     </div>
   </section>
 
+  <section id="memory" class="screen" hidden>
+    <div class="bar">
+      <button class="btn ghost" onclick="backToLesson()">回課程選單</button>
+      <span class="progress" id="memProgress"></span>
+    </div>
+    <p class="prompt">翻開一張「名稱」和一張「說明」，找出成對的卡片</p>
+    <div class="memgrid" id="memGrid"></div>
+    <div class="feedback" id="memFb" role="status"></div>
+  </section>
+
+  <section id="album" class="screen" hidden>
+    <div class="bar">
+      <button class="btn ghost" onclick="show('units')">回單元目錄</button>
+      <span class="progress" id="albumProgress"></span>
+    </div>
+    <p class="prompt">卡片圖鑑</p>
+    <p class="keyhint" style="margin:-6px 0 14px">通過關卡就能拿到卡片，拿到三顆星會升級成閃卡。</p>
+    <div class="album" id="albumGrid"></div>
+  </section>
+
   <section id="result" class="screen" hidden>
     <div class="card result">
       <div class="stars" id="resStars"></div>
       <h2 id="resTitle"></h2>
       <p id="resText"></p>
+      <p class="lvup" id="resLevel"></p>
+      <div id="resCard"></div>
       <div class="review" id="resReview"></div>
       <div class="actions" style="justify-content:center">
         <button class="btn" id="resAgain">再玩一次</button>
@@ -478,7 +559,7 @@ const UNITS = [
     {id:'u4x', t:'臺灣記得你：花宅聚落、魯凱族石板屋（延伸學習，不用背）', p:94},
     {id:'u4r', t:'第四單元總複習'}]},
   {n:'★', c:'#9B86D6', t:'全冊總複習', l:[
-    {id:'final', t:'全冊大挑戰、農業發展年表、開墾人物'}]}
+    {id:'final', t:'最終魔王戰、是非快打、農業發展年表、開墾人物'}]}
 ];
 
 const LESSONS = {
@@ -497,7 +578,7 @@ const LESSONS = {
       {q:'歐洲人看到臺灣風景美麗，稱呼臺灣為什麼？', o:['福爾摩沙','大員','東方之珠','香料群島'], e:'歐洲人稱臺灣為福爾摩沙（Formosa），這個名字到今天仍常用來代表臺灣。'},
       {q:'17世紀西方地圖上的「大員」，是今天的哪裡？', o:['臺南安平','臺北','高雄','花蓮'], e:'大員就是今天的臺南安平。綠島、蘭嶼也出現在那張古地圖上。'}
     ]},
-    {id:'match1', type:'match', title:'古地圖配對', desc:'把地名和緯線配上正確的說明。', pairs:[
+    {id:'match1', type:'memory', title:'古地圖配對', desc:'把地名和緯線配上正確的說明。', pairs:[
       ['大員','今天的臺南安平'],
       ['福爾摩沙','歐洲人對臺灣的稱呼（Formosa）'],
       ['赤道','0度緯線，分開北半球和南半球'],
@@ -598,7 +679,7 @@ const LESSONS = {
   ]},
 
   u1l3: {missions:[
-    {id:'tribes', type:'match', title:'原住民族在哪裡', desc:'把族群配上主要分布的地方。', pairs:[
+    {id:'tribes', type:'memory', title:'原住民族在哪裡', desc:'把族群配上主要分布的地方。', pairs:[
       ['雅美族（達悟族）','蘭嶼'],
       ['邵族','日月潭（南投）'],
       ['賽夏族','新竹、苗栗一帶'],
@@ -652,7 +733,8 @@ const LESSONS = {
   ]},
 
   u1r: {missions:[
-    {id:'mix', type:'quiz', title:'單元大考驗', desc:'從第1到第3課隨機出15題，每次都不一樣。', from:['u1l1','u1l2','u1l3'], count:15},
+    {id:'mix', type:'boss', title:'魔王戰：岩石巨人', desc:'答對就能攻擊魔王，連續答對三題會打出爆擊！', from:['u1l1','u1l2','u1l3'], hp:15, boss:{name:'岩石巨人', c:'#9AA0B5', kind:0}},
+    {id:'tf', type:'tf', title:'是非快打', desc:'看題目和答案，判斷對不對。', from:['u1l1','u1l2','u1l3'], count:12},
     {id:'timeline', type:'order', title:'時光排序', desc:'把發生的事情依照時間先後排好。', prompt:'從最早發生的開始，依序點選', items:[
       '長濱遺址的人住在海濱洞穴，打製石器',
       '卑南遺址的人種稻米、芋頭，形成大聚落',
@@ -780,7 +862,8 @@ const LESSONS = {
   ]},
 
   u2r: {missions:[
-    {id:'mix', type:'quiz', title:'單元大考驗', desc:'從第1、第2課隨機出15題，每次都不一樣。', from:['u2l1','u2l2'], count:15}
+    {id:'mix', type:'boss', title:'魔王戰：幽靈船長', desc:'答對就能攻擊魔王，連續答對三題會打出爆擊！', from:['u2l1','u2l2'], hp:15, boss:{name:'幽靈船長', c:'#3BA7F0', kind:1}},
+    {id:'tf', type:'tf', title:'是非快打', desc:'看題目和答案，判斷對不對。', from:['u2l1','u2l2'], count:12}
   ]},
 
   u3l1: {missions:[
@@ -796,7 +879,7 @@ const LESSONS = {
       {t:'在半山腰建造隘門作為防衛', c:1},
       {t:'新竹義民廟紀念在事件中犧牲的先民', c:0}
     ]},
-    {id:'ports', type:'match', title:'水圳與港口', desc:'把水圳、港口和老街配上正確的說明。', pairs:[
+    {id:'ports', type:'memory', title:'水圳與港口', desc:'把水圳、港口和老街配上正確的說明。', pairs:[
       ['八堡圳','施世榜投資開發，帶動員林街形成'],
       ['一府','府城（今臺南市）'],
       ['二鹿','鹿港'],
@@ -898,7 +981,8 @@ const LESSONS = {
   ]},
 
   u3r: {missions:[
-    {id:'mix', type:'quiz', title:'單元大考驗', desc:'從第1、第2課隨機出15題，每次都不一樣。', from:['u3l1','u3l2'], count:15},
+    {id:'mix', type:'boss', title:'魔王戰：混亂大王', desc:'答對就能攻擊魔王，連續答對三題會打出爆擊！', from:['u3l1','u3l2'], hp:15, boss:{name:'混亂大王', c:'#FF9F5E', kind:2}},
+    {id:'tf', type:'tf', title:'是非快打', desc:'看題目和答案，判斷對不對。', from:['u3l1','u3l2'], count:12},
     {id:'timeline', type:'order', title:'時光排序', desc:'把清帝國時期的大事依照時間排好。', prompt:'從最早發生的開始，依序點選', items:[
       '臺灣納入清帝國版圖，限制人民渡臺',
       '林爽文事件，清帝國派兵鎮壓',
@@ -1036,11 +1120,13 @@ const LESSONS = {
   ]},
 
   u4r: {missions:[
-    {id:'mix', type:'quiz', title:'單元大考驗', desc:'從第1到第3課隨機出15題，每次都不一樣。', from:['u4l1','u4l2','u4l3'], count:15}
+    {id:'mix', type:'boss', title:'魔王戰：汙泥怪', desc:'答對就能攻擊魔王，連續答對三題會打出爆擊！', from:['u4l1','u4l2','u4l3'], hp:15, boss:{name:'汙泥怪', c:'#9A7B5B', kind:3}},
+    {id:'tf', type:'tf', title:'是非快打', desc:'看題目和答案，判斷對不對。', from:['u4l1','u4l2','u4l3'], count:12}
   ]},
 
   final: {missions:[
-    {id:'mix', type:'quiz', title:'全冊大挑戰', desc:'從整本書隨機出20題。', from:['u1l1','u1l2','u1l3','u2l1','u2l2','u3l1','u3l2','u4l1','u4l2','u4l3'], count:20},
+    {id:'mix', type:'boss', title:'魔王戰：遺忘大魔王', desc:'答對就能攻擊魔王，連續答對三題會打出爆擊！', from:['u1l1','u1l2','u1l3','u2l1','u2l2','u3l1','u3l2','u4l1','u4l2','u4l3'], hp:20, boss:{name:'遺忘大魔王', c:'#B79AF0', kind:4}},
+    {id:'tf', type:'tf', title:'是非快打', desc:'看題目和答案，判斷對不對。', from:['u1l1','u1l2','u1l3','u2l1','u2l2','u3l1','u3l2','u4l1','u4l2','u4l3'], count:12},
     {id:'farm', type:'order', title:'臺灣農業發展年表', desc:'依照課本第96、97頁的年表，把農業發展排好。', prompt:'從最早發生的開始，依序點選', items:[
       '長濱遺址的人靠採集、狩獵和捕魚維生',
       '卑南遺址的人用石器收割作物',
@@ -1050,7 +1136,7 @@ const LESSONS = {
       '施世榜興建八堡圳、郭錫瑠興建瑠公圳',
       '曹謹興建曹公圳，帶動鳳山地區開發'
     ], years:['距今約5萬～5千年前','距今約3,500～2,000年前','距今約2,000～400年前','17世紀','17世紀','18世紀','19世紀']},
-    {id:'canal', type:'match', title:'開墾人物', desc:'清帝國時期開發土地的重要人物。', pairs:[
+    {id:'canal', type:'memory', title:'開墾人物', desc:'清帝國時期開發土地的重要人物。', pairs:[
       ['施世榜','興建八堡圳，開發彰化平原'],
       ['郭錫瑠','興建瑠公圳，加速臺北盆地開發'],
       ['曹謹','興建曹公圳，帶動鳳山地區開發'],
@@ -1062,6 +1148,90 @@ const LESSONS = {
 const LMETA = {};
 UNITS.forEach(u => u.l.forEach(l => { if(l.id) LMETA[l.id] = {...l, unit:u}; }));
 
+/* ================= 卡片與等級 ================= */
+const CARDS = {
+  'u1l1:world':['🌏','五大洲三大洋','世界分為亞洲、美洲、歐洲、非洲、大洋洲，以及太平洋、大西洋、印度洋。'],
+  'u1l1:quiz1':['⛵','福爾摩沙','400多年前，歐洲人航行經過臺灣，稱臺灣為福爾摩沙（Formosa）。'],
+  'u1l1:match1':['🗺️','大員','17世紀西方地圖上的大員，就是今天的臺南安平。'],
+  'u1l1:tw':['🏝️','海洋國家','我國範圍包括臺灣島、澎湖、金門、馬祖、釣魚臺列嶼及南海諸島，面積約36,000平方公里。'],
+  'u1l1:monsoon':['🌬️','季風','冬季吹東北季風，北部溼冷多雨；夏季吹西南季風，全臺溼熱多雨。'],
+  'u1l1:match2':['🍊','新埔柿餅','新竹新埔的居民利用冬季強風與日曬，把柿子做成柿餅。'],
+  'u1l1:quiz2':['🕊️','黑面琵鷺','每年9～10月飛到臺南七股度冬，隔年3～5月才飛回北方。'],
+  'u1l2:era':['🪨','長濱遺址','舊石器時代。住在海濱洞穴，打製石器，已經知道用火。'],
+  'u1l2:relic':['⚱️','卑南遺址','新石器時代。磨製石器、製作陶器，出土二千多具石板棺。'],
+  'u1l2:sixw':['🔍','六何法','何人、何事、何時、何地、為何、如何，幫你抓住重點。'],
+  'u1l2:quiz':['⚒️','十三行遺址','金屬器時代。會煉鐵，還出土來自東南亞的琉璃珠。'],
+  'u1l3:tribes':['🧭','十六族','經政府認定的臺灣原住民族共有十六個族群。'],
+  'u1l3:culture':['🦌','白鹿傳說','邵族祖先追逐白鹿，發現魚蝦豐富的日月潭，全族搬來定居。'],
+  'u1l3:quiz':['🐟','飛魚','雅美族（達悟族）只在每年3～10月食用飛魚，捕魚不一網打盡。'],
+  'u1x:jade':['💎','人獸形耳飾','卑南遺址出土的國寶，用臺灣玉雕成兩個人頭頂著一隻動物。'],
+  'u1r:mix':['🏅','先民足跡勳章','打敗岩石巨人的證明！'],
+  'u1r:tf':['🔮','琉璃珠','十三行遺址出土的琉璃珠來自東南亞，見證史前的跨海交流。'],
+  'u1r:timeline':['⏳','史前時光機','舊石器時代、新石器時代、金屬器時代，依序登場。'],
+  'u2l1:power':['🏰','熱蘭遮城','荷蘭人1624年來到臺灣，建立熱蘭遮城，就是今天的安平古堡。'],
+  'u2l1:forts':['🧱','紅毛城','前身是西班牙人的聖多明哥城，後來荷蘭人在附近重建。'],
+  'u2l1:people':['⚔️','鄭成功','人稱國姓爺。1662年迫使荷蘭人退出臺灣，設立承天府。'],
+  'u2l1:timeline':['📜','大航海年表','1624荷蘭人來臺、1626西班牙人來臺、1662鄭成功趕走荷蘭人、1684納入清帝國。'],
+  'u2l1:quiz':['👘','鹿皮','荷蘭人把鹿皮賣到日本做武士服裝，高峰期每年超過10萬張。'],
+  'u2l2:legacy':['🐂','黃牛','荷蘭人引進黃牛耕種，也帶來荷蘭豆和土芒果。'],
+  'u2l2:traces':['🦁','劍獅','用來驅邪祈福，形象據說源於鄭氏軍隊盾牌上的獅面。'],
+  'u2l2:quiz':['🏫','全臺首學','臺南孔廟是全臺第一座孔廟，由陳永華規劃興建。'],
+  'u2x:dadu':['🏹','大肚王','臺灣中部平埔族群部落聯盟的領導者。'],
+  'u2r:mix':['🏅','大航海勳章','打敗幽靈船長的證明！'],
+  'u2r:tf':['🫛','荷蘭豆','荷蘭人引進豌豆，所以豌豆又叫荷蘭豆。'],
+  'u3l1:riot':['🚩','林爽文事件','清帝國時期規模最大的民變，演變成全臺動亂。'],
+  'u3l1:ports':['⚓','一府二鹿三艋舺','府城、鹿港、艋舺是清帝國時期臺灣三大貿易港口。'],
+  'u3l1:quiz':['💧','八堡圳','施世榜投資開發，用竹簍裝石塊擋高水位，把溪水引入水圳。'],
+  'u3l2:trade':['🍵','茶與樟腦','開港後由淡水出口，讓臺灣的經濟重心由南往北轉移。'],
+  'u3l2:build':['🚂','騰雲號','劉銘傳興建基隆到新竹的鐵路時購入的火車頭。'],
+  'u3l2:people':['🎖️','劉銘傳','1885年臺灣建省，擔任首任巡撫，推動鐵路、輪船、電報。'],
+  'u3l2:sixw':['🐦','斯文豪','英國外交官，發表臺灣第一份鳥類紀錄，許多物種以他命名。'],
+  'u3l2:quiz':['🏯','恆春城','牡丹社事件後興建，城牆設計成凹凸狀，方便防禦。'],
+  'u3x:mackay':['🦷','馬偕','用免費拔牙的方式傳教，創辦理學堂大書院和淡水女學堂。'],
+  'u3r:mix':['🏅','清帝國勳章','打敗混亂大王的證明！'],
+  'u3r:tf':['📰','臺灣府城教會報','巴克禮在1885年發行，是臺灣第一份報紙。'],
+  'u3r:timeline':['📅','清帝國年表','1684納入版圖、1786林爽文事件、1874牡丹社事件、1885建省。'],
+  'u4l1:landform':['⛰️','五種地形','山地、丘陵、台地、盆地、平原，各有不同的利用方式。'],
+  'u4l1:use':['🌲','太平山','從早期的林場，轉型為國家森林遊樂區。'],
+  'u4l1:quiz':['🌋','板塊擠壓','菲律賓海板塊和歐亞板塊擠壓，約600萬年前臺灣島浮出海面。'],
+  'u4l2:coastmap':['🏖️','四種海岸','西部沙岸、北部岩石海岸、東部斷層海岸、南部珊瑚礁海岸。'],
+  'u4l2:coast':['🪸','珊瑚礁海岸','南部海水溫暖乾淨，適合珊瑚生長，並設立國家公園保育。'],
+  'u4l2:quiz':['🧗','清水斷崖','位在花蓮，可以看出東部陡峭的海岸線。'],
+  'u4l3:problem':['🌾','高粱','西南沿海改種用水量少的高粱，可以減緩地層下陷。'],
+  'u4l3:aihe':['🌉','愛河','曾經被廢水汙染，整治後再度成為高雄的熱門景點。'],
+  'u4l3:quiz':['🌊','世界海洋日','每年6月8日，提醒大家珍惜海洋資源。'],
+  'u4x:arch':['🏠','石板屋','魯凱族的石板屋有縫隙能通風，被稱為會呼吸的房子。'],
+  'u4r:mix':['🏅','土地守護勳章','打敗汙泥怪的證明！'],
+  'u4r:tf':['🏞️','千塘之鄉','桃園台地的埤塘曾經多達數千口，用來儲水灌溉。'],
+  'final:mix':['🏆','社會探險王','打敗遺忘大魔王，整本課本都難不倒你！'],
+  'final:tf':['🎓','是非達人','對或不對，一眼就能看出來。'],
+  'final:farm':['🚜','農業發展年表','從採集狩獵、石器農耕、鐵器，到引進黃牛、興建水圳。'],
+  'final:canal':['👷','開墾人物','施世榜、郭錫瑠、曹謹興建水圳，吳沙開墾宜蘭。']
+};
+const LEVELS = [[0,'見習水手'],[15,'水手'],[35,'航海士'],[60,'領航員'],[90,'副船長'],[125,'船長'],[160,'傳奇探險王']];
+function allMissions(){
+  const a = [];
+  UNITS.forEach(u => u.l.forEach(l => { if(l.id && LESSONS[l.id]) LESSONS[l.id].missions.forEach(m => a.push({key:l.id + ':' + m.id, m})); }));
+  return a;
+}
+function totalStars(){ const s = readJSON(SKEY); return allMissions().reduce((a, x) => a + (s[x.key] || 0), 0); }
+function levelOf(n){ let i = 0; LEVELS.forEach((l, k) => { if(n >= l[0]) i = k; }); return i; }
+function cardBox(c, shiny){
+  return `<div class="tcard${shiny ? ' shiny' : ''}"><div class="art">${c[0]}</div><h3>${c[1]}</h3>${shiny ? '<span class="tag">閃卡</span>' : ''}<p>${c[2]}</p></div>`;
+}
+function renderAlbum(){
+  const s = readJSON(SKEY), all = allMissions();
+  let owned = 0, html = '';
+  all.forEach(x => {
+    const c = CARDS[x.key]; if(!c) return;
+    const n = s[x.key] || 0;
+    if(n >= 1){ owned++; html += cardBox(c, n === 3); }
+    else html += `<div class="tcard locked"><div class="art">❔</div><h3>？？？</h3><p>通過「${x.m.title}」取得</p></div>`;
+  });
+  $('albumGrid').innerHTML = html;
+  $('albumProgress').textContent = `已收集 ${owned} / ${all.filter(x => CARDS[x.key]).length} 張`;
+}
+
 /* ================= 畫面切換 ================= */
 let screen = 'units', curLesson = null, curMission = null;
 function show(id){
@@ -1069,6 +1239,7 @@ function show(id){
   screen = id; window.scrollTo(0,0);
   if(id === 'units') renderUnits();
   if(id === 'lesson') renderLesson();
+  if(id === 'album') renderAlbum();
 }
 function backToLesson(){ show(curLesson ? 'lesson' : 'units'); }
 function lessonStars(lid){
@@ -1077,7 +1248,10 @@ function lessonStars(lid){
 }
 function renderUnits(){
   const wcount = Object.keys(readJSON(WKEY)).length;
-  $('wbBar').innerHTML = '';
+  const total = totalStars(), all = allMissions(), max = all.length * 3, lv = levelOf(total), next = LEVELS[lv+1];
+  const pct = next ? Math.round((total - LEVELS[lv][0]) / (next[0] - LEVELS[lv][0]) * 100) : 100;
+  const sAll = readJSON(SKEY), owned = all.filter(x => CARDS[x.key] && (sAll[x.key] || 0) >= 1).length;
+  $('wbBar').innerHTML = `<div class="level"><div>等級：<b>${LEVELS[lv][1]}</b>　★ ${total} / ${max}</div><div class="xpbar"><div class="xpfill" style="width:${pct}%"></div></div><div class="keyhint">${next ? `再拿 ${next[0] - total} 顆星，就能升級為「${next[1]}」。` : '已經是最高等級了！'}</div></div><div class="topbtns" id="topBtns"></div>`;
   const b = document.createElement('button');
   if(wcount){
     b.className = 'btn warn'; b.textContent = `錯題本練習（${wcount} 題）`;
@@ -1085,10 +1259,14 @@ function renderUnits(){
   } else {
     b.className = 'btn ghost'; b.textContent = '錯題本（目前沒有錯題）'; b.disabled = true;
   }
-  $('wbBar').appendChild(b);
+  $('topBtns').appendChild(b);
+  const ab = document.createElement('button');
+  ab.className = 'btn'; ab.textContent = `卡片圖鑑（${owned} / ${all.filter(x => CARDS[x.key]).length}）`;
+  ab.onclick = () => show('album');
+  $('topBtns').appendChild(ab);
   const tip = document.createElement('p');
   tip.className = 'keyhint';
-  tip.textContent = '問答、地圖、配對、分類關卡答錯的題目，都會自動收進錯題本，答對就會移出。';
+  tip.textContent = '答錯的題目會自動收進錯題本，答對就會移出。通過關卡可以收集卡片。';
   $('wbBar').appendChild(tip);
   const box = $('unitList'); box.innerHTML = '';
   UNITS.forEach(u => {
@@ -1127,19 +1305,33 @@ function renderLesson(){
 function startMission(m){
   curMission = m;
   if(m.type === 'map') startMap(m.map === 'TW' ? TW : m.map === 'TWC' ? TWC : WORLD);
-  else if(m.type === 'quiz') startQuiz(m);
+  else if(m.type === 'quiz' || m.type === 'boss' || m.type === 'tf') startQuiz(m);
+  else if(m.type === 'memory') startMemory(m);
   else if(m.type === 'match') startMatch(m);
   else if(m.type === 'sort') startSort(m);
   else if(m.type === 'order') startOrder(m);
 }
 function finish(stars, title, text, reviewHTML){
-  if(!curMission.wb && curLesson) saveStar(curLesson+':'+curMission.id, stars);
+  const m = curMission;
+  let cardHTML = '', lvText = '';
+  if(!m.wb && curLesson){
+    const key = curLesson + ':' + m.id, prev = readJSON(SKEY)[key] || 0, lvBefore = levelOf(totalStars());
+    saveStar(key, stars);
+    const c = CARDS[key];
+    if(c && stars >= 1 && (prev < 1 || (prev < 3 && stars === 3))){
+      cardHTML = `<p class="got">${prev < 1 ? '獲得新卡片！' : '卡片升級成閃卡！'}</p>` + cardBox(c, stars === 3) + (stars < 3 ? '<p class="keyhint">拿到三顆星，卡片會升級成閃卡。</p>' : '');
+    }
+    const lvAfter = levelOf(totalStars());
+    if(lvAfter > lvBefore) lvText = `升級了！你現在是「${LEVELS[lvAfter][1]}」。`;
+  }
   $('resStars').innerHTML = starHTML(stars);
   $('resTitle').textContent = title;
   $('resText').textContent = text;
+  $('resLevel').textContent = lvText;
+  $('resCard').innerHTML = cardHTML;
   $('resReview').innerHTML = reviewHTML || '';
-  const m = curMission;
   $('resAgain').hidden = !!(m.wb && !Object.keys(readJSON(WKEY)).length);
+  $('resAgain').textContent = stars === 0 ? '再挑戰一次' : '再玩一次';
   $('resAgain').onclick = () => startMission(m);
   show('result');
 }
@@ -1209,58 +1401,207 @@ function mapClick(e){
 $('world').addEventListener('click', mapClick);
 $('twmap').addEventListener('click', mapClick);
 
-/* ================= 問答引擎 ================= */
+/* ================= 問答、魔王戰、是非快打引擎 ================= */
 let qz = null;
+const NKEY = 'social5a-seen', BKEY = 'social5a-best';
+function poolFrom(m){ return shuffle(m.from.flatMap(lid => LESSONS[lid].missions.filter(x => x.type === 'quiz').flatMap(x => x.qs))); }
+function pickRound(m){
+  const key = curLesson + ':' + m.id, all = readJSON(NKEY), seen = new Set(all[key] || []);
+  const n = Math.min(10, m.qs.length);
+  const fresh = shuffle(m.qs.filter(q => !seen.has(q.q)));
+  let pick;
+  if(fresh.length < n){
+    const rest = shuffle(m.qs.filter(q => seen.has(q.q))).slice(0, n - fresh.length);
+    pick = fresh.concat(rest);
+    all[key] = rest.map(q => q.q);
+  } else {
+    pick = fresh.slice(0, n);
+    all[key] = [...seen, ...pick.map(q => q.q)];
+  }
+  writeJSON(NKEY, all);
+  return shuffle(pick);
+}
+function monsterSVG(c, kind){
+  const tops = [
+    '<polygon points="60,40 75,10 90,40" fill="#8B8FA3"/><polygon points="95,36 112,4 128,36" fill="#A3A7BA"/><polygon points="130,40 146,12 160,40" fill="#8B8FA3"/>',
+    '<path d="M52 42 Q110 -16 168 42 Z" fill="#2B2D42"/><rect x="46" y="38" width="128" height="10" rx="5" fill="#2B2D42"/><circle cx="110" cy="22" r="7" fill="#fff"/>',
+    '<rect x="78" y="2" width="64" height="38" rx="4" fill="#2B2D42"/><rect x="58" y="36" width="104" height="10" rx="5" fill="#2B2D42"/><rect x="78" y="26" width="64" height="8" fill="#FFC93C"/>',
+    '<path d="M110 44 C76 14 96 -4 110 10 C124 -4 144 14 110 44Z" fill="#22B573"/>',
+    '<polygon points="64,44 64,12 87,30 110,6 133,30 156,12 156,44" fill="#FFC93C"/>'
+  ];
+  return `<svg viewBox="0 0 220 200" class="monster" role="img" aria-label="魔王">${tops[kind]}<path d="M40 110 C40 50 180 50 180 110 L180 170 Q165 190 150 170 Q135 190 120 170 Q110 190 100 170 Q85 190 70 170 Q55 190 40 170 Z" fill="${c}"/><circle cx="85" cy="105" r="18" fill="#fff"/><circle cx="135" cy="105" r="18" fill="#fff"/><circle cx="88" cy="108" r="8" fill="#2B2D42"/><circle cx="132" cy="108" r="8" fill="#2B2D42"/><path d="M88 142 Q110 158 132 142" fill="none" stroke="#2B2D42" stroke-width="6" stroke-linecap="round"/></svg>`;
+}
 function startQuiz(m){
+  const mode = m.wb ? 'wb' : m.type;
   let qs;
-  if(m.wb) qs = Object.values(readJSON(WKEY));
-  else if(m.from) qs = shuffle(m.from.flatMap(lid => LESSONS[lid].missions.filter(x => x.type === 'quiz').flatMap(x => x.qs))).slice(0, m.count);
-  else qs = m.qs;
+  if(mode === 'wb') qs = shuffle(Object.values(readJSON(WKEY)));
+  else if(mode === 'boss') qs = poolFrom(m);
+  else if(mode === 'tf') qs = poolFrom(m).filter(q => !/不是|沒有|不包括/.test(q.q)).slice(0, m.count).map(q => {
+    const truth = Math.random() < 0.5;
+    return {...q, truth, shown: truth ? q.o[0] : q.o[1 + Math.floor(Math.random() * (q.o.length - 1))]};
+  });
+  else qs = pickRound(m);
   if(!qs.length) return finish(3, '錯題本清空了！', '目前沒有錯題，繼續保持。');
-  qz = {list:shuffle(qs).map(q => ({...q, order:shuffle(q.o.map((_,i) => i))})), i:0, score:0, wrong:[], answered:false, wb:!!m.wb};
+  const hearts = mode === 'wb' ? 0 : 5;
+  qz = {mode, list:qs.map(q => ({...q, order:shuffle(q.o.map((_,i) => i))})), i:0, right:0, hearts, maxHearts:hearts,
+        combo:0, score:0, wrong:[], answered:false, hp:m.hp || 0, maxHp:m.hp || 0};
+  $('hud').hidden = mode === 'wb';
+  $('bossBox').hidden = mode !== 'boss';
+  if(mode === 'boss'){
+    $('bossName').textContent = m.boss.name;
+    $('bossArt').innerHTML = monsterSVG(m.boss.c, m.boss.kind);
+    $('bossArt').className = 'bossart';
+  }
+  $('quizKeys').textContent = mode === 'tf' ? '可以按鍵盤 1（對）或 2（不對）作答，按 Enter 到下一題。' : '可以按鍵盤數字鍵作答，按 Enter 到下一題。';
   show('quiz'); renderQ();
 }
-function renderQ(){
-  if(qz.i >= qz.list.length){
-    let rev = '';
-    if(qz.wrong.length) rev = '<h3>錯題回顧</h3><ul>' + qz.wrong.map(q => `<li>${q.q}<br><span class="ans">答案：${q.o[0]}</span>。${q.e}</li>`).join('') + '</ul>';
-    const left = Object.keys(readJSON(WKEY)).length;
-    const text = `答對 ${qz.score} 題，共 ${qz.list.length} 題。` + (qz.wb ? (left ? `錯題本還剩 ${left} 題。` : '錯題本已經清空了！') : '');
-    return finish(ratioStars(qz.score/qz.list.length), curMission.title + '完成！', text, rev);
+function renderHud(){
+  if(qz.mode === 'wb') return;
+  $('hudHearts').innerHTML = '♥'.repeat(Math.max(0, qz.hearts)) + `<span class="lost">${'♥'.repeat(qz.maxHearts - Math.max(0, qz.hearts))}</span>`;
+  $('hudCombo').textContent = qz.combo >= 2 ? `${qz.combo} 連擊！` : '';
+  $('hudScore').textContent = `分數 ${qz.score}`;
+  if(qz.mode === 'boss'){
+    $('bossHp').style.width = (qz.hp / qz.maxHp * 100) + '%';
+    $('bossHpText').textContent = `魔王體力 ${qz.hp} / ${qz.maxHp}`;
   }
+}
+function quizOver(){
+  if(qz.mode === 'wb') return qz.i >= qz.list.length;
+  if(qz.mode === 'boss' && qz.hp <= 0) return true;
+  return qz.i >= qz.list.length;
+}
+function endQuiz(){
+  let rev = '';
+  if(qz.wrong.length) rev = '<h3>錯題回顧</h3><ul>' + qz.wrong.map(q => `<li>${q.q}<br><span class="ans">答案：${q.o[0]}</span>。${q.e}</li>`).join('') + '</ul>';
+  const m = curMission;
+  if(qz.mode === 'wb'){
+    const left = Object.keys(readJSON(WKEY)).length;
+    return finish(ratioStars(qz.right / qz.list.length), '錯題本練習完成！', `答對 ${qz.right} 題，共 ${qz.list.length} 題。` + (left ? `錯題本還剩 ${left} 題。` : '錯題本已經清空了！'), rev);
+  }
+  if(qz.hearts <= 0){
+    const beat = qz.mode === 'boss' && qz.hp <= 0;
+    const t0 = beat ? `打敗${m.boss.name}了！` : qz.mode === 'boss' ? `${m.boss.name}逃走了！` : m.title + '完成！';
+    return finish(0, t0, `答對 ${qz.right} 題。愛心用完了，所以這次沒有星星。看看錯題回顧，再挑戰一次，你一定可以！`, rev);
+  }
+  const key = curLesson + ':' + m.id, best = readJSON(BKEY);
+  if(!(best[key] >= qz.score)){ best[key] = qz.score; writeJSON(BKEY, best); }
+  const tail = `剩下 ${qz.hearts} 顆愛心，分數 ${qz.score}（最高紀錄 ${best[key]}）。`;
+  if(qz.mode === 'boss'){
+    if(qz.hp > 0) return finish(1, `${m.boss.name}逃走了！`, `題目用完了，下次再把牠打倒。` + tail, rev);
+    return finish(qz.hearts >= 4 ? 3 : qz.hearts >= 2 ? 2 : 1, `打敗${m.boss.name}了！`, `答對 ${qz.right} 題，` + tail, rev);
+  }
+  return finish(qz.hearts === 5 ? 3 : qz.hearts >= 3 ? 2 : 1, m.title + '完成！', `答對 ${qz.right} 題，共 ${qz.list.length} 題，` + tail, rev);
+}
+function renderQ(){
+  if(quizOver()) return endQuiz();
   const q = qz.list[qz.i];
   qz.answered = false;
-  $('quizProgress').textContent = `第 ${qz.i+1} / ${qz.list.length} 題`;
+  $('quizProgress').textContent = qz.mode === 'boss' ? `第 ${qz.i+1} 回合` : `第 ${qz.i+1} / ${qz.list.length} 題`;
   $('quizQ').textContent = q.q;
   $('quizOpts').innerHTML = '';
-  q.order.forEach((oi, k) => {
-    const b = document.createElement('button');
-    b.className = 'opt';
-    b.innerHTML = `<span class="k">${k+1}</span><span>${q.o[oi]}</span>`;
-    b.onclick = () => answer(k);
-    $('quizOpts').appendChild(b);
-  });
+  if(qz.mode === 'tf'){
+    const s = document.createElement('span');
+    s.className = 'tfans'; s.textContent = `答案是「${q.shown}」，對嗎？`;
+    $('quizQ').appendChild(s);
+    ['○　對', '✕　不對'].forEach((t, k) => {
+      const b = document.createElement('button');
+      b.className = 'opt'; b.innerHTML = `<span class="k">${k+1}</span><span>${t}</span>`;
+      b.onclick = () => answer(k);
+      $('quizOpts').appendChild(b);
+    });
+  } else {
+    q.order.forEach((oi, k) => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.innerHTML = `<span class="k">${k+1}</span><span>${q.o[oi]}</span>`;
+      b.onclick = () => answer(k);
+      $('quizOpts').appendChild(b);
+    });
+  }
   setFb('quizExp','','');
   $('quizNext').hidden = true;
+  renderHud();
 }
 function answer(k){
   if(qz.answered) return;
   qz.answered = true;
-  const q = qz.list[qz.i], btns = $('quizOpts').children, right = q.order.indexOf(0);
+  const q = qz.list[qz.i], btns = $('quizOpts').children;
+  const right = qz.mode === 'tf' ? (q.truth ? 0 : 1) : q.order.indexOf(0);
   [...btns].forEach(b => b.disabled = true);
   btns[right].classList.add('ok');
-  const w = readJSON(WKEY);
   if(k === right){
-    qz.score++; setFb('quizExp','答對了！' + q.e, 'ok');
-    if(qz.wb){ delete w[q.q]; writeJSON(WKEY, w); }
+    qz.right++; qz.combo++; qz.score += 10 * Math.min(qz.combo, 5);
+    let msg = '答對了！';
+    if(qz.mode === 'boss'){
+      const dmg = qz.combo >= 3 ? 2 : 1;
+      qz.hp = Math.max(0, qz.hp - dmg);
+      msg = dmg === 2 ? '爆擊！魔王受到 2 點傷害。' : '命中！魔王受到 1 點傷害。';
+      const art = $('bossArt'); art.classList.remove('hit'); void art.offsetWidth; art.classList.add('hit');
+      if(qz.hp <= 0) art.classList.add('dead');
+    }
+    if(qz.mode === 'tf' && !q.truth) msg += `正確答案是「${q.o[0]}」。`;
+    setFb('quizExp', msg + q.e, 'ok');
+    if(qz.mode === 'wb'){ const w = readJSON(WKEY); delete w[q.q]; writeJSON(WKEY, w); }
   } else {
-    btns[k].classList.add('bad'); qz.wrong.push(q);
-    setFb('quizExp', '答錯了。正確答案是「' + q.o[0] + '」。' + q.e, 'bad');
-    addWrong(q);
+    btns[k].classList.add('bad'); qz.combo = 0; qz.wrong.push(q);
+    addWrong({q:q.q, o:q.o, e:q.e});
+    if(qz.mode !== 'wb'){
+      if(qz.hearts > 0) qz.hearts--;
+      const hud = $('hud'); hud.classList.remove('hurt'); void hud.offsetWidth; hud.classList.add('hurt');
+    }
+    const lead = qz.mode === 'tf' ? `答錯了。這句話是${q.truth ? '對' : '錯'}的，` : '答錯了。';
+    const justOut = qz.mode !== 'wb' && qz.hearts === 0 && !qz.out;
+    if(justOut) qz.out = true;
+    setFb('quizExp', lead + '正確答案是「' + q.o[0] + '」。' + q.e + (justOut ? '（愛心用完了，可以繼續作答，但這次拿不到星星。）' : ''), 'bad');
   }
+  renderHud();
+  qz.i++;
+  $('quizNext').textContent = quizOver() ? '看結果' : '下一題';
+  qz.i--;
   $('quizNext').hidden = false; $('quizNext').focus();
 }
 $('quizNext').onclick = () => { qz.i++; renderQ(); };
+
+/* ================= 記憶翻牌引擎 ================= */
+let mg = null;
+function startMemory(m){
+  const cards = [];
+  m.pairs.forEach((p, i) => { cards.push({k:i, side:'a', t:p[0]}); cards.push({k:i, side:'b', t:p[1]}); });
+  mg = {m, open:[], done:0, miss:0, lock:false};
+  const grid = $('memGrid'); grid.innerHTML = '';
+  shuffle(cards).forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'mem ' + c.side;
+    b.innerHTML = `<span class="back">${c.side === 'a' ? '名稱' : '說明'}</span><span class="face">${c.t}</span>`;
+    b.onclick = () => flip(b, c);
+    grid.appendChild(b);
+  });
+  $('memProgress').textContent = `已找到 0 / ${m.pairs.length} 對`;
+  setFb('memFb','','');
+  show('memory');
+}
+function flip(b, c){
+  if(mg.lock || b.classList.contains('open') || b.classList.contains('done')) return;
+  if(mg.open.length === 1 && mg.open[0].c.side === c.side){ setFb('memFb','請翻一張「名稱」和一張「說明」。','bad'); return; }
+  b.classList.add('open'); mg.open.push({b, c});
+  if(mg.open.length < 2) return;
+  const [x, y] = mg.open, n = mg.m.pairs.length;
+  if(x.c.k === y.c.k){
+    [x.b, y.b].forEach(e => { e.classList.remove('open'); e.classList.add('done'); });
+    mg.open = []; mg.done++;
+    const p = mg.m.pairs[x.c.k];
+    $('memProgress').textContent = `已找到 ${mg.done} / ${n} 對`;
+    setFb('memFb', `配對成功！${p[0]}：${p[1]}`, 'ok');
+    if(mg.done === n){
+      const s = mg.miss <= n ? 3 : mg.miss <= n * 2 ? 2 : 1;
+      setTimeout(() => finish(s, curMission.title + '完成！', `全部找到了，翻錯 ${mg.miss} 次。`), 900);
+    }
+  } else {
+    mg.miss++; mg.lock = true;
+    setFb('memFb','不是一對，記住它們的位置。','bad');
+    setTimeout(() => { [x.b, y.b].forEach(e => e.classList.remove('open')); mg.open = []; mg.lock = false; }, 1400);
+  }
+}
 
 /* ================= 配對引擎 ================= */
 let mm = null;
@@ -1387,7 +1728,7 @@ function pickOrder(b, i){
 document.addEventListener('keydown', e => {
   if(screen === 'quiz' && qz){
     const n = parseInt(e.key, 10);
-    if(n >= 1 && n <= qz.list[qz.i].o.length && !qz.answered) answer(n-1);
+    if(n >= 1 && n <= $('quizOpts').children.length && !qz.answered) answer(n-1);
     else if(e.key === 'Enter' && qz.answered){ e.preventDefault(); qz.i++; renderQ(); }
   } else if(screen === 'sort' && st){
     const n = parseInt(e.key, 10);
