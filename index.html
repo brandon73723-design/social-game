@@ -1073,12 +1073,18 @@ function lessonStars(lid){
 function renderUnits(){
   const wcount = Object.keys(readJSON(WKEY)).length;
   $('wbBar').innerHTML = '';
+  const b = document.createElement('button');
   if(wcount){
-    const b = document.createElement('button');
     b.className = 'btn warn'; b.textContent = `錯題本練習（${wcount} 題）`;
     b.onclick = () => { curLesson = null; startMission({id:'wb', wb:true, type:'quiz', title:'錯題本'}); };
-    $('wbBar').appendChild(b);
+  } else {
+    b.className = 'btn ghost'; b.textContent = '錯題本（目前沒有錯題）'; b.disabled = true;
   }
+  $('wbBar').appendChild(b);
+  const tip = document.createElement('p');
+  tip.className = 'keyhint';
+  tip.textContent = '問答關卡答錯的題目會自動收進錯題本，答對就會移出。';
+  $('wbBar').appendChild(tip);
   const box = $('unitList'); box.innerHTML = '';
   UNITS.forEach(u => {
     const d = document.createElement('div');
